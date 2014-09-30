@@ -1,0 +1,100 @@
+[submodule "mixins/vim-pathogen"]
+	path = mixins/vim-pathogen
+	url = https://github.com/tpope/vim-pathogen
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-angry"]
+	path = .vim/bundle/vim-angry
+	url = https://github.com/b4winckler/vim-angry
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-buffalo"]
+	path = .vim/bundle/vim-buffalo
+	url = https://github.com/Raimondi/vim-buffalo
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-fanfingtastic"]
+	path = .vim/bundle/vim-fanfingtastic
+	url = http://github.com/dahu/vim-fanfingtastic
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-flake8"]
+	path = .vim/bundle/vim-flake8
+	url = https://github.com/nvie/vim-flake8
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vimple"]
+	path = .vim/bundle/vimple
+	url = https://github.com/dahu/vimple
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-repeat"]
+	path = .vim/bundle/vim-repeat
+	url = http://github.com/tpope/vim-repeat
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-surround"]
+	path = .vim/bundle/vim-surround
+	url = http://github.com/tpope/vim-surround.git
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-bitbake"]
+	path = .vim/bundle/vim-bitbake
+	url = https://github.com/kergoth/vim-bitbake
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-ldif"]
+	path = .vim/bundle/vim-ldif
+	url = https://github.com/vim-scripts/ldif.vim
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-mediawiki"]
+	path = .vim/bundle/vim-mediawiki
+	url = https://github.com/atdt/vim-mediawiki
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-textobj-user"]
+	path = .vim/bundle/vim-textobj-user
+	url = https://github.com/kana/vim-textobj-user
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-commentary"]
+	path = .vim/bundle/vim-commentary
+	url = https://github.com/tpope/vim-commentary
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/ctrlp.vim"]
+	path = .vim/bundle/ctrlp.vim
+	url = https://github.com/kien/ctrlp.vim
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/bisectly"]
+	path = .vim/bundle/bisectly
+	url = https://github.com/dahu/bisectly
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/golden-ratio"]
+	path = .vim/bundle/golden-ratio
+	url = https://github.com/roman/golden-ratio
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/tern_for_vim"]
+	path = .vim/bundle/tern_for_vim
+	url = https://github.com/marijnh/tern_for_vim
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/csv.vim"]
+	path = .vim/bundle/csv.vim
+	url = https://github.com/chrisbra/csv.vim
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-fugitive"]
+	path = .vim/bundle/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
+	ignore = dirty
+	branch = master
+[submodule ".vim/bundle/vim-signify"]
+	path = .vim/bundle/vim-signify
+	url = https://github.com/mhinz/vim-signify
+	ignore = dirty
+	branch = master

@@ -1,0 +1,331 @@
+set nocompatible
+
+" Create the 'vimrc' autocmd group, used below, and immediately clear it in
+" case this file is being sourced a second time.
+augroup vimrc | execute 'autocmd!' | augroup END
+
+" Move <leader> from '\' to ' '
+let mapleader = ' '
+
+"== General ==================================================================
+
+" Encoding vim uses to render text
+set encoding=utf-8
+" Set the terminal title
+set title
+" Change the bell from beep to flash
+" (can also use: set noerrorbells, or remove all system bells in .bashrc)
+set visualbell
+" Don't wait too long to process terminal escape sequences such as the arrow
+" keys and the F keys, since they commonly use 'O' in the escape sequence,
+" which results in the 'O' command being excessively slow, as vim sometimes
+" waits for the timeout. The 'O' slowness is sporadic, so the root cause is
+" just an educated guess.
+set ttimeoutlen=10
+" Display incomplete commands
+set showcmd
+" Show cursor line/char position
+set ruler
+" Shorten feedback messages. :help shortmess
+set shortmess=atI
+" Number lines relative to the cursor
+set number
+" Show matching brackets / parentheses
+set showmatch
+" Don't wrap lines
+set nowrap
+" Don't move cursor to the start of the line on gg, G, and various friends
+set nostartofline
+" Smart tab completion for vim commands
+set wildmenu wildmode=list:longest,full
+" Case-insensitive file name completion
+" http://stackoverflow.com/questions/3686841/vim-case-insensitive-filename-completion
+if version >= 730
+    set wildignorecase
+endif
+" Keep a longer history (default is 20)
+set history=10000
+" Don't separate joined sentences by two spaces
+set nojoinspaces
+" Default clipboard to "+
+" This is glitchy on OS X unless 'unnamed' is also included
+set clipboard=unnamedplus,unnamed,exclude:cons\|linux
+" Intuitive backspacing in insert mode
+set backspace=indent,eol,start
+
+" Allow settings to be tweaked via comments within the source file. Override
+" distro default for number of lines checked for modelines. On OS X, for
+" instance, this defaults to 0.
+set modeline modelines=5
+" Disable modelines when editing git commit messages, to allow commit subjects
+" like 'vim: ...'
+autocmd vimrc FileType gitcommit,gitrebase setlocal nomodeline
+
+" Jump back in the jump list via shift-tab
+nnoremap <s-tab> <c-o>
+
+" Pathogen: https://github.com/tpope/vim-pathogen
+silent! execute pathogen#infect()
+
+"== Temp files ===============================================================
+
+if has("vms")
+    " Don't keep a backup file, use versions instead
+    set nobackup
+else
+    " Make a backup before overwriting a file
+    set backup
+    " Persist undo history across sessions
+    set undofile
+endif
+
+" Temp files
+if has("win32")
+    " Directory for swap files
+    set directory=$TEMP,$TMP,.
+    " Don't overwrite symlinks in Windows
+    set backupcopy=yes
+else
+    set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+endif
+" Directory for backups, which happen before every write
+let &backupdir=&directory
+" Directory for undo files, used for undo persistence
+let &undodir=&directory
+
+" Credit: tpope
+" Delete swapfiles for unmodified buffers
+autocmd vimrc CursorHold,BufWritePost,BufReadPost,BufLeave *
+            \ if !$VIMSWAP && isdirectory(expand("<amatch>:h")) |
+            \   let &swapfile = &modified |
+            \ endif
+
+"== Search ===================================================================
+
+" Search incrementally, and case insensitively unless pattern has upper-case
+" characters
+set incsearch ignorecase smartcase
+" Highlight all search term matches
+set hlsearch
+" Don't auto-highlight the last search (relevant when $MYVIMRC is sourced)
+nohlsearch
+" Toggle search term highlighting
+nnoremap <silent> <leader>h :set hlsearch!<cr>
+" Stop highlighting search term when forcing a screen redraw
+nnoremap <silent> <c-l> :nohlsearch<cr><c-l>
+
+"== Whitespace ===============================================================
+
+" By default, expand tabs into spaces (some plugins override this)
+set tabstop=4 shiftwidth=4 expandtab
+" But prefer tabs for some file types
+autocmd vimrc FileType bitbake,gitconfig,cs,javascript setlocal noexpandtab
+
+set listchars=nbsp:¬,tab:>-,trail:·,eol:$
+
+" Toggle list mode
+function! ToggleListMode()
+    if !&list
+        let whitespace_settings =
+            \ 'filetype=' . &ft .
+            \ ' tabstop=' . &ts .
+            \ ' softtabstop=' . &sts .
+            \ ' shiftwidth=' . &sw .
+            \ (&et ? ' ' : ' no') . 'expandtab'
+        echo whitespace_settings
+    else
+        echo
+    endif
+    set list!
+endfunction
+
+" Toggle list mode and look at whitespace settings
+nnoremap <silent> <leader>s :call ToggleListMode()<cr>
+
+"== Formatting & refactoring =================================================
+
+" Use Q to format instead of entering ex mode
+nnoremap Q gq
+vnoremap Q gq
+
+" Strip trailing whitespace
+nnoremap <silent> <leader>S :%s/\s\+$//e<cr>
+
+" Replace word under cursor
+nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
+
+function! FormatJson() range
+    python << EOF
+import vim, json
+firstline = int(vim.eval("a:firstline"))
+lastline = int(vim.eval("a:lastline"))
+buf_range = vim.current.buffer.range(firstline, lastline)
+obj = json.loads("".join(buf_range))
+formatted = json.dumps(obj, indent=4)
+buf_range[:] = formatted.split("\n")
+EOF
+endfunction
+
+" Decrease mediawiki header importance (e.g. = -> ==, == -> ===)
+nnoremap <leader>w :%s/^\(=\+\)\s*\(.\{-}\)\s*\(=\+\)\s*/\1= \2 \3=/e<cr>
+" Remap lines of tab-delimited fields like like '183E002Z	97' into firmware
+" numbers like 'F183E002Z-007'
+nnoremap <leader>x :%s/\(.*\)\t\(\d\+\)/\=printf("F%s-%03i",submatch(1),submatch(2)-89)/<cr>
+
+"== Auto-completion ==========================================================
+
+" <c-x> <c-k> dictionary completion
+set dictionary=/usr/share/dict/words
+
+function! TabCompletion(...)
+    let col = col('.') - 1
+    if !col || getline('.')[col-1] !~ '\k'
+        return "\<tab>"
+    elseif a:0 > 0 && a:1 == 'prev'
+        return "\<c-p>"
+    else
+        return "\<c-n>"
+    endif
+endfunction
+
+" Tab / shift-tab shortcuts for i_^x^n and i_^x^p
+inoremap <tab> <c-r>=TabCompletion('next')<cr>
+inoremap <s-tab> <c-r>=TabCompletion('prev')<cr>
+
+"== Viewport =================================================================
+
+" Maintain more context around cursor when scrolling
+set scrolloff=3
+
+" Scroll viewport multiple lines at a time
+nnoremap <c-e> 5<c-e>
+nnoremap <c-y> 5<c-y>
+nnoremap zl 8zl
+nnoremap zh 8zh
+
+" Jump to the last known cursor position when opening a file, unless the
+" position is invalid, or we're inside an event handler (happens when dropping
+" a file on gvim), or when jumping to the first line, or when opening
+" gitcommit or gitrebase buffers.
+function! s:JumpToLastKnownCursorPosition()
+    if line("'\"") <= 1 | return | endif
+    if line("'\"") <= line("$") | return | endif
+    if index(['gitcommit', 'gitrebase'], &ft) >= 0 | return | endif
+    execute "normal! g`\"" |
+endfunction
+
+autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
+
+"== Buffers, windows, and tab pages ==========================================
+
+" Allow unsaved background buffers
+set hidden
+
+" Cycle buffers with left/right arrow keys
+nnoremap <silent> <left> :bprev<cr>
+nnoremap <silent> <right> :bnext<cr>
+nnoremap <silent> <s-left> :tabprev<cr>
+nnoremap <silent> <s-right> :tabnext<cr>
+
+"== File types ===============================================================
+
+" Detect file type and enable language-specific settings and indentation
+filetype plugin indent on
+
+" Detect InstallShield scripts
+autocmd BufNewFile,BufRead *.rul set filetype=ishd
+
+function! s:VimFileType()
+    " Show a line at 79
+    setlocal colorcolumn=79
+    " Open vim help for word under cursor
+    nnoremap K :execute 'help ' . expand("<cword>")<cr>
+endfunction
+
+autocmd vimrc FileType vim call s:VimFileType()
+
+function! s:JavascriptFileType()
+    let jshint_path = 'jshint'
+    if executable(jshint_path)
+        setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
+        let &l:makeprg=jshint_path
+        command! -buffer Make
+                    \ silent make % | silent redraw! | silent cwindow |
+                    \ silent wincmd p
+    else
+        execute "command! -buffer Make echoerr 'Bad jshint path: " .
+                    \ jshint_path . "'"
+    endif
+endfunction
+
+autocmd vimrc FileType javascript call s:JavascriptFileType()
+
+"== Colors ===================================================================
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+    syntax on
+endif
+
+function! SetColorScheme(...)
+    for name in a:000
+        try
+            execute 'colorscheme ' . name
+            break
+        catch /^Vim\%((\a\+)\)\=:E185/
+        endtry
+    endfor
+endfunction
+
+if has("gui_running")
+    call SetColorScheme("desert256", "desert")
+elseif &t_Co == 256
+    call SetColorScheme("busybee", "desert256", "desert")
+else
+    call SetColorScheme("desert")
+endif
+
+" Change the paren matching color to stand out in the chosen color scheme.
+" This must be executed after vim starts, because otherwise the matchparen
+" plugin overwrites the specified value with its own default on load.
+autocmd vimrc VimEnter * highlight MatchParen ctermbg=magenta
+
+"== Gvim =====================================================================
+
+if has("gui_running")
+    set lines=40 columns=130 " Default height / width
+    set guioptions-=m  " Disable menu bar
+    set guioptions-=T  " Disable toolbar
+    set guioptions-=r  " Disable right-hand scroll bar
+    set mouse-=a       " Disable mouse
+    set shell=bash     " Avoid zsh on dumb terminals
+endif
+
+" OS-specific tweaks
+if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+elseif has("gui_win32")
+    set guifont=Consolas:h10:cANSI
+    " Disable tearoff menu entries
+    set guioptions-=t
+endif
+
+"== Misc utils ===============================================================
+
+" Open a file from the current buffer's dir
+nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
+
+" Change dir to the directory of the current buffer
+nnoremap <leader>c :cd %:p:h \| :pwd<cr>
+
+" Generic test runner mapping
+nnoremap <leader>t :nnoremap <lt>leader>t :w \\| !./%<lt>cr><c-f>4h
+
+function! ShowMessages(cmd)
+    redir => s | sil! execute a:cmd | redir END
+    new | set buftype=nofile bufhidden=wipe noswapfile
+    call setline(1, split(s, '\n'))
+endfunction
