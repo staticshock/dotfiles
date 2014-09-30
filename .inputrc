@@ -1,0 +1,7 @@
+# Use case-insensitive tab completion
+set completion-ignore-case on
+
+# OS X bindings
+# alt-left / alt-right
+"\e[1;9C" forward-word
+"\e[1;9D" backward-word
