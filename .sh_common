@@ -1,0 +1,149 @@
+#!/bin/bash
+
+# Make some commands verbose
+for cmd in cp mv rm chmod chown rename; do
+    alias $cmd="$cmd -v"
+done
+
+# Add default args to some commands
+alias make="make --no-print-directory"
+alias grep="grep --exclude-dir=.svn --exclude-dir=.git"
+alias rgrep="grep -r"
+alias tree="tree --charset=ascii"
+alias nosetests='nosetests --no-byte-compile'
+alias synergys="synergys -f --config ~/.synergyrc"
+alias xclip="xclip -selection clipboard"
+
+# Context
+alias h=hostname
+alias parents='pstree --ascii --show-parents --show-pids --arguments --highlight-pid=$$ $$ | grep -e "" -e "${SHELL##*/}"'
+alias path=$'echo $PATH | tr : "\n"'
+function cd() { builtin cd $1 && ls; }
+
+# Highlighting
+# Pasting snippets from workflowy, sometimes I encounter spaces replaced with
+# non-breaking spaces. This highlights them in files or from stdin.
+alias nbsp="GREP_COLOR='44' grep -I $'\u00A0'"
+# Highlight DOS newlines
+alias crlf="GREP_COLOR='44' grep -IU $'\r\n'"
+# decent-looking pygmentize styles: fruity, monokai, native
+alias ccat='pygmentize -f terminal256 -O style=native'
+
+# Text processing / formatting
+alias cuts="cut -d ' '"
+alias beautifyjs="uglifyjs -b --overwrite"
+# List the files modified by a patch
+lsdiff() {
+    grep '^\(---\|+++\) ' "$@" | cut -f 1
+}
+# Diff the first file argument to the remaining file arguments, and find the
+# most similar one
+shortestdiff() {
+    for f in "${@:2}"; do
+        echo "$(diff "$1" "$f" | wc -l)\t$f"
+    done | sort -n
+}
+# Show the results of a potential sed invocation as a diff. Invoked with the
+# same arguments as sed.
+sedtest() {
+    local args file
+    args=("${@:1:$(($# -1))}")  # all but the last arg
+    file="${@: -1}"  # last arg
+    colordiff "$file" <(command sed "${args[@]}" "$file")
+}
+
+# Source control
+# http://stackoverflow.com/a/239358/419876
+alias svn-clean='svn status | grep ^\? | cut -c9- | xargs -I {} -d \\n rm -r {}'
+alias gitnp='git --no-pager'
+# Verify the spelling of an svn commit
+# Usage: spellcommit <repo> <commit number>
+spellcommit() {
+    diff=/tmp/$RANDOM.diff
+    svn diff -c $2 $1 | grep '^+' | grep -v '^+++' > $diff
+    scspell $diff
+    \rm $diff
+}
+# Usage: fixspelling . <typo> <fix>
+fixspelling() {
+    while IFS= read -r -d $'\0' file; do
+        echo "Updating $file"
+        sed -i "s/$2/$3/g" "$file"
+    done < <(rgrep -IilZ "$2" "$1")
+}
+
+# Misc
+alias freenode="irssi --connect=irc.freenode.org --nick=staticshock"
+alias get='sudo apt-fast install -y'
+# Swap the names of two files
+swap() {
+    tmp="${1%/}~$RANDOM~$RANDOM"
+    mv "$1" "$tmp"
+    mv "$2" "$1"
+    mv "$tmp" "$2"
+}
+# Play random muisc from a directory
+# random-music <dir>
+random-music() {
+    mplayer -shuffle -playlist <(find "$1" -name "*\.flac" -o -name "*\.mp3" -o -name "*\.wav" -o -name "*\.m4a")
+}
+# Turn hex into a binary string
+a2b_hex() {
+    python -c "import binascii as b; print(repr(b.a2b_hex('$1')))"
+}
+# Add the SHA1 sums to the sums file for specified files that aren't already
+# present in the sums file.
+# Usage: sha1sum-missing <sum file> <file1> [file2] ...
+sha1sum-missing() {
+    if [ $# -lt 2 ]; then echo "Usage: $0 <sum file> <file1> [file2] ..."; return; fi
+    sum_file="$1"
+    shift
+    comm -23 <(ls "$@") <(cut -d' ' -f3 "$sum_file" | sort) |
+        xargs -r sha1sum |
+        tee -a "$sum_file"
+    sort -k2 "$sum_file" -o "$sum_file"
+}
+
+socalc() {
+    soffice --calc "$1" >/dev/null 2>&1 <&1 &!
+}
+
+# Force tty to behave as a 256-color terminal
+[[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
+
+# Prefix homebrew packages to $PATH
+[[ -d /usr/local/bin ]] && PATH=/usr/local/bin:$PATH
+[[ -d /usr/local/sbin ]] && PATH=/usr/local/sbin:$PATH
+
+# Ruby on OS X
+if [[ -d /Library/Ruby/Gems/2.0.0 ]]; then
+    GEM_HOME="$HOME/.gem/ruby/2.0.0"
+    PATH="$GEM_HOME/bin:$PATH"
+fi
+
+# RVM
+if [[ -d "$HOME/.rvm" ]]; then
+    # Add RVM to PATH for scripting
+    PATH=$PATH:$HOME/.rvm/bin
+
+    # Configure env as if `rvm use default_rvm_ruby@default_rvm_gemset` was executed:
+    default_rvm_ruby=ruby-1.9.3-p448
+    default_rvm_gemset=
+    global_gem_home=$HOME/.rvm/gems/$default_rvm_ruby@global
+    if [[ -d $HOME/.rvm/gems/$default_rvm_ruby ]]; then
+        export GEM_HOME=$HOME/.rvm/gems/$default_rvm_ruby
+        export GEM_PATH=$GEM_HOME:$global_gem_home
+        PATH=\
+$GEM_HOME/bin:\
+$global_gem_home/bin:\
+$HOME/.rvm/rubies/$default_rvm_ruby/bin:\
+$PATH
+        [[ -z $default_rvm_gemset ]] || PATH=$HOME/.rvm/gems/$default_rvm_ruby$default_rvm_gemset/bin:$PATH
+    fi
+
+    # If the session is interactive, load RVM into a shell session *as a function*
+    [[ $- == *i* ]] && source "$HOME/.rvm/scripts/rvm"
+fi
+
+# Source extras
+[[ -d ~/.dotfiles/sh-extras ]] && source ~/.dotfiles/sh-extras/*
