@@ -1,0 +1,9 @@
+BoldAsFont=no
+Font=Ubuntu Mono
+CursorType=block
+FontHeight=12
+BoldAsColour=yes
+FontSmoothing=default
+Term=xterm-256color
+Columns=120
+Rows=30
