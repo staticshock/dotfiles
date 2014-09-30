@@ -1,0 +1,1 @@
+../../mixins/irssi-notifier/notifier.pl

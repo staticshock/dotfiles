@@ -1,0 +1,1 @@
+../../mixins/irssi-nickcolor/nickcolor.pl
