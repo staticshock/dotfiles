@@ -1,0 +1,4 @@
+startup_message off
+term screen-256color
+# unbind the "clear" command, since it seems to trip me up
+bind C
