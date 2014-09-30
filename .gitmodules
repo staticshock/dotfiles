@@ -1,3 +1,6 @@
+[submodule ".oh-my-zsh"]
+	path = .oh-my-zsh
+	url = http://github.com/robbyrussell/oh-my-zsh.git
 [submodule "mixins/vim-pathogen"]
 	path = mixins/vim-pathogen
 	url = https://github.com/tpope/vim-pathogen
