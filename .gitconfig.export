@@ -1,0 +1,25 @@
+# vim:ft=gitconfig
+[user]
+	email = olegov@gmail.com
+	name = Anton Backer
+[core]
+	editor = vim
+	pager = less -FX
+[alias]
+	hist = log --oneline --graph --decorate -n 20
+	trees = log --format=\"%h %T\"
+	tree = !git --no-pager show -s --format=\"%T\"
+	mod = submodule
+	note = notes
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[color]
+	ui = true
+[rebase]
+	autosquash = true
+[rerere]
+	enabled = true
+[tag]
+	sort = version:refname
