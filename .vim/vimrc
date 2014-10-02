@@ -116,10 +116,11 @@ nnoremap <silent> <c-l> :nohlsearch<cr><c-l>
 
 "== Whitespace ===============================================================
 
-" By default, expand tabs into spaces (some plugins override this)
+" By default, indent with 4 spaces, and don't use softtabstop
 set tabstop=4 shiftwidth=4 expandtab
-" But prefer tabs for some file types
+" But prefer other indents for some specific file types
 autocmd vimrc FileType bitbake,gitconfig,cs,javascript setlocal noexpandtab
+autocmd vimrc FileType ruby setlocal tabstop=2 shiftwidth=2
 
 set listchars=nbsp:¬,tab:>-,trail:·,eol:$
 
