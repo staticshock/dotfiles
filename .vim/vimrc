@@ -234,7 +234,7 @@ nnoremap <silent> <s-right> :tabnext<cr>
 filetype plugin indent on
 
 " Detect InstallShield scripts
-autocmd BufNewFile,BufRead *.rul set filetype=ishd
+autocmd vimrc BufNewFile,BufRead *.rul set filetype=ishd
 
 function! s:VimFileType()
     " Show a line at 79
