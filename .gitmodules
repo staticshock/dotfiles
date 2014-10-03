@@ -110,3 +110,8 @@
 	url = https://github.com/mhinz/vim-signify
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/editorconfig-vim"]
+	path = .vim/bundle/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim
+	ignore = dirty
+	branch = master
