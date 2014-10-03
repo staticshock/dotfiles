@@ -117,7 +117,7 @@ socalc() {
 
 # Ruby on OS X
 if [[ -d /Library/Ruby/Gems/2.0.0 ]]; then
-    GEM_HOME="$HOME/.gem/ruby/2.0.0"
+    export GEM_HOME="$HOME/.gem/ruby/2.0.0"
     PATH="$GEM_HOME/bin:$PATH"
 fi
 
