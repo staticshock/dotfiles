@@ -111,8 +111,19 @@ set hlsearch
 nohlsearch
 " Toggle search term highlighting
 nnoremap <silent> <leader>h :set hlsearch!<cr>
-" Stop highlighting search term when forcing a screen redraw
-nnoremap <silent> <c-l> :nohlsearch<cr><c-l>
+
+function! RedrawExtra()
+    diffupdate
+    if exists('b:sy') && b:sy.active
+        call sy#start()
+    endif
+endfunction
+
+" When forcing a screen redraw:
+"   - Stop highlighting current search term
+"   - Update the diff
+"   - Reset signs for vim-signify
+nnoremap <silent> <c-l> :nohlsearch \| call RedrawExtra()<cr><c-l>
 
 "== Whitespace ===============================================================
 
