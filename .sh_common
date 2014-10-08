@@ -146,4 +146,6 @@ $PATH
 fi
 
 # Source extras
-[[ -d ~/.dotfiles/sh-extras ]] && source ~/.dotfiles/sh-extras/*
+[[ -d ~/.dotfiles/sh-extras ]] && for f in ~/.dotfiles/sh-extras/*; do
+    source "$f"
+done
