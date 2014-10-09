@@ -108,12 +108,47 @@ socalc() {
     soffice --calc "$1" >/dev/null 2>&1 <&1 &!
 }
 
+# Something like `readlink -f`, but works on OS X
+# Changes pwd; intended to be used in a subshell: real_path=$(readlink_f path/to/file)
+readlink_f() {
+    file_path=$1
+
+    builtin cd "$(dirname "$file_path")"
+    file_name=$(basename "$file_path")
+
+    while [[ -L "$file_name" ]]
+    do
+        file_path=$(readlink "$file_name")
+        builtin cd "$(dirname "$file_path")"
+        file_name=$(basename "$file_path")
+    done
+
+    echo "$(pwd -P)/$file_name"
+}
+
+# Something like `readlink -f`, but parameter is a binary name instead of a path
+# Changes pwd; intended to be used in a subshell: real_path=$(resolve_real_exe_path exe)
+# Does not discern shell built-ins
+resolve_real_exe_path() {
+    file=$(which "$1")
+    (( $? == 0 )) || return $?
+    readlink_f "$file"
+}
+
 # Force tty to behave as a 256-color terminal
 [[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
 
 # Prefix homebrew packages to $PATH
 [[ -d /usr/local/bin ]] && PATH=/usr/local/bin:$PATH
 [[ -d /usr/local/sbin ]] && PATH=/usr/local/sbin:$PATH
+
+# Amend bash completion
+arc_path=$(resolve_real_exe_path arc)
+if (( $? == 0 )); then
+    # Arc executable lives in in arcanist/bin/arc
+    arc_completion="${arc_path%/*}/../resources/shell/bash-completion"
+    [[ -f "$arc_completion" ]] && . "$arc_completion"
+fi
 
 # Ruby on OS X
 if [[ -d /Library/Ruby/Gems/2.0.0 ]]; then
