@@ -221,7 +221,7 @@ nnoremap zh 8zh
 " gitcommit or gitrebase buffers.
 function! s:JumpToLastKnownCursorPosition()
     if line("'\"") <= 1 | return | endif
-    if line("'\"") <= line("$") | return | endif
+    if line("'\"") > line("$") | return | endif
     if index(['gitcommit', 'gitrebase'], &ft) >= 0 | return | endif
     execute "normal! g`\"" |
 endfunction
