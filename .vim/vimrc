@@ -222,7 +222,8 @@ nnoremap zh 8zh
 function! s:JumpToLastKnownCursorPosition()
     if line("'\"") <= 1 | return | endif
     if line("'\"") > line("$") | return | endif
-    if index(['gitcommit', 'gitrebase'], &ft) >= 0 | return | endif
+    " Ignore git commit messages and git rebase scripts
+    if expand("%") =~# '\(^\|/\)\.git/' | return | endif
     execute "normal! g`\"" |
 endfunction
 
