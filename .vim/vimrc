@@ -252,7 +252,7 @@ function! s:VimFileType()
     " Show a line at 79
     setlocal colorcolumn=79
     " Open vim help for word under cursor
-    nnoremap <buffer> K :execute 'help ' . expand("<cword>")<cr>
+    setlocal keywordprg=:help
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
