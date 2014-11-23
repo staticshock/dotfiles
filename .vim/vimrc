@@ -64,6 +64,9 @@ autocmd vimrc FileType gitcommit,gitrebase setlocal nomodeline
 " Jump back in the jump list via shift-tab
 nnoremap <s-tab> <c-o>
 
+" Save current buffer
+nmap <silent> <leader><leader> :update<cr><c-l>
+
 " Pathogen: https://github.com/tpope/vim-pathogen
 silent! execute pathogen#infect()
 
