@@ -212,12 +212,6 @@ inoremap <s-tab> <c-r>=TabCompletion('prev')<cr>
 " Maintain more context around cursor when scrolling
 set scrolloff=3
 
-" Scroll viewport multiple lines at a time
-nnoremap <c-e> 5<c-e>
-nnoremap <c-y> 5<c-y>
-nnoremap zl 8zl
-nnoremap zh 8zh
-
 " Jump to the last known cursor position when opening a file, unless the
 " position is invalid, or we're inside an event handler (happens when dropping
 " a file on gvim), or when jumping to the first line, or when opening
@@ -232,7 +226,7 @@ endfunction
 
 autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
 
-"== Buffers, windows, and tab pages ==========================================
+"== Navigation ===============================================================
 
 " Allow unsaved background buffers
 set hidden
@@ -241,11 +235,72 @@ set splitbelow
 " When vsplitting, place new window to the right
 set splitright
 
-" Cycle buffers with left/right arrow keys
-nnoremap <silent> <left> :bprev<cr>
-nnoremap <silent> <right> :bnext<cr>
-nnoremap <silent> <s-left> :tabprev<cr>
-nnoremap <silent> <s-right> :tabnext<cr>
+function! s:ViewportMappings()
+    let [ystep, xstep] = [5, 10]
+    " Move viewport
+    execute 'nnoremap <left> '.xstep.'zh'
+    execute 'nnoremap <right> '.xstep.'zl'
+    execute 'nnoremap <up> '.ystep.'<c-y>'
+    execute 'nnoremap <down> '.ystep.'<c-e>'
+    " Move viewport a bit faster
+    execute 'nnoremap <s-left> '.xstep*3.'zh'
+    execute 'nnoremap <s-right> '.xstep*3.'zl'
+    execute 'nnoremap <s-up> '.ystep*3.'<c-y>'
+    execute 'nnoremap <s-down> '.ystep*3.'<c-e>'
+endfunction
+
+function! s:FoldMappings()
+    " Navigate to next/previous fold
+    nnoremap <up> zk
+    nnoremap <down> zj
+    " Open/close fold under cursor
+    nnoremap <left> zc
+    nnoremap <s-left> zC
+    nnoremap <right> zo
+    nnoremap <s-right> zO
+    " Create folds
+    vnoremap <left> zf
+endfunction
+
+function! s:BufferMappings()
+    " Cycle buffers
+    nnoremap <silent> <left> :bprev<cr>
+    nnoremap <silent> <right> :bnext<cr>
+    nnoremap <silent> <up> :bprev<cr>
+    nnoremap <silent> <down> :bnext<cr>
+endfunction
+
+function! s:WindowMappings()
+    " Switch focus to adjacent window
+    nnoremap <left> <c-w>h
+    nnoremap <right> <c-w>l
+    nnoremap <up> <c-w>k
+    nnoremap <down> <c-w>j
+    " Move active window
+    nnoremap <s-left> <c-w>H
+    nnoremap <s-right> <c-w>L
+    nnoremap <s-up> <c-w>K
+    nnoremap <s-down> <c-w>J
+    " Discard unfocused windows
+    nnoremap <silent> <cr> :only<cr>
+endfunction
+
+function! s:TabPageMappings()
+    " Cycle tabs
+    nnoremap <silent> <left> :tabprev<cr>
+    nnoremap <silent> <right> :tabnext<cr>
+    " Move active tab relative to other tabs
+    nnoremap <silent> <s-left> :tabmove -1<cr>
+    nnoremap <silent> <s-right> :tabmove +1<cr>
+endfunction
+
+" Enable various navigation shortcuts with <leader>k.
+" Mnemonic: 'k' = 'keys', since most of the mappings are arrow-key oriented.
+nnoremap <silent> <leader>kv :call <sid>ViewportMappings()<cr>
+nnoremap <silent> <leader>kf :call <sid>FoldMappings()<cr>
+nnoremap <silent> <leader>kb :call <sid>BufferMappings()<cr>
+nnoremap <silent> <leader>kw :call <sid>WindowMappings()<cr>
+nnoremap <silent> <leader>kt :call <sid>TabPageMappings()<cr>
 
 "== Vim experimentation ======================================================
 
