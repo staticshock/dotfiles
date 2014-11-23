@@ -236,12 +236,30 @@ autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
 
 " Allow unsaved background buffers
 set hidden
+" When splitting, place new window below
+set splitbelow
+" When vsplitting, place new window to the right
+set splitright
 
 " Cycle buffers with left/right arrow keys
 nnoremap <silent> <left> :bprev<cr>
 nnoremap <silent> <right> :bnext<cr>
 nnoremap <silent> <s-left> :tabprev<cr>
 nnoremap <silent> <s-right> :tabnext<cr>
+
+"== Vim experimentation ======================================================
+
+" Create a new vim buffer for on-the-fly experiments.
+" Inspired by Gary Bernhardt.
+function! s:VimScratchBuffer()
+    let tmpfile = tempname().'.vim'
+    " TODO there's a bug in vimple, I think, which causes vim-buffalo to
+    " sometimes show tmpfile in the buffer list even after the window is
+    " closed.
+    execute 'vsplit '.tmpfile | set bufhidden=wipe
+endfunction
+
+nnoremap <silent> <leader>e :call <sid>VimScratchBuffer()<cr>
 
 "== File types ===============================================================
 
@@ -335,7 +353,7 @@ endif
 "== Misc utils ===============================================================
 
 " Open a file from the current buffer's dir
-nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
+"nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
 
 " Change dir to the directory of the current buffer
 nnoremap <leader>c :cd %:p:h \| :pwd<cr>
