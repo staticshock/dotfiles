@@ -5,6 +5,7 @@
 [core]
 	editor = vim
 	pager = less -FX
+	excludesfile = ~/.gitignore_global
 [alias]
 	hist = log --oneline --graph --decorate -n 20
 	trees = log --format=\"%h %T\"
