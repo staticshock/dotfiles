@@ -207,8 +207,14 @@ endfunction
 inoremap <tab> <c-r>=TabCompletion('next')<cr>
 inoremap <s-tab> <c-r>=TabCompletion('prev')<cr>
 
-"== Viewport =================================================================
+"== Navigation & orientation =================================================
 
+" Allow unsaved background buffers
+set hidden
+" When splitting, place new window below
+set splitbelow
+" When vsplitting, place new window to the right
+set splitright
 " Maintain more context around cursor when scrolling
 set scrolloff=3
 
@@ -225,15 +231,6 @@ function! s:JumpToLastKnownCursorPosition()
 endfunction
 
 autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
-
-"== Navigation ===============================================================
-
-" Allow unsaved background buffers
-set hidden
-" When splitting, place new window below
-set splitbelow
-" When vsplitting, place new window to the right
-set splitright
 
 function! s:ViewportMappings()
     let [ystep, xstep] = [5, 10]
