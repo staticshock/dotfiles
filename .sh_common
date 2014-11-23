@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Disable automatic expansion of "!<cmd>" in interactive sessions
+set +o histexpand
+
 # Make some commands verbose
 for cmd in cp mv rm chmod chown rename; do
     alias $cmd="$cmd -v"
