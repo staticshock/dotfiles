@@ -185,7 +185,7 @@ endfunction
 nnoremap <leader>w :%s/^\(=\+\)\s*\(.\{-}\)\s*\(=\+\)\s*/\1= \2 \3=/e<cr>
 " Remap lines of tab-delimited fields like like '183E002Z	97' into firmware
 " numbers like 'F183E002Z-007'
-nnoremap <leader>x :%s/\(.*\)\t\(\d\+\)/\=printf("F%s-%03i",submatch(1),submatch(2)-89)/<cr>
+"nnoremap <leader>x :%s/\(.*\)\t\(\d\+\)/\=printf("F%s-%03i",submatch(1),submatch(2)-89)/<cr>
 
 "== Auto-completion ==========================================================
 
@@ -256,6 +256,9 @@ function! s:VimFileType()
     setlocal colorcolumn=79
     " Open vim help for word under cursor
     setlocal keywordprg=:help
+    " Save and source current vim buffer
+    nnoremap <silent> <buffer> <leader>x
+                \ :silent update <bar> source % <bar> setf vim<cr>
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
