@@ -115,3 +115,8 @@
 	url = https://github.com/editorconfig/editorconfig-vim
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/tabular"]
+	path = .vim/bundle/tabular
+	url = https://github.com/godlygeek/tabular
+	ignore = dirty
+	branch = master
