@@ -279,7 +279,8 @@ function! s:WindowMappings()
     nnoremap <s-up> <c-w>K
     nnoremap <s-down> <c-w>J
     " Discard unfocused windows
-    nnoremap <silent> <cr> :only<cr>
+    " (disabled because it interferes with quickfix usage)
+    "nnoremap <silent> <cr> :only<cr>
 endfunction
 
 function! s:TabPageMappings()
@@ -305,9 +306,6 @@ nnoremap <silent> <leader>kt :call <sid>TabPageMappings()<cr>
 " Inspired by Gary Bernhardt.
 function! s:VimScratchBuffer()
     let tmpfile = tempname().'.vim'
-    " TODO there's a bug in vimple, I think, which causes vim-buffalo to
-    " sometimes show tmpfile in the buffer list even after the window is
-    " closed.
     execute 'vsplit '.tmpfile | set bufhidden=wipe
 endfunction
 
@@ -328,7 +326,7 @@ function! s:VimFileType()
     setlocal keywordprg=:help
     " Save and source current vim buffer
     nnoremap <silent> <buffer> <leader>x
-                \ :silent update <bar> source % <bar> setf vim<cr>
+                \ :silent update <bar> source % <bar> execute 'setf '.&ft<cr>
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
