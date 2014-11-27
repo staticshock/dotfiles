@@ -304,12 +304,13 @@ nnoremap <silent> <leader>kt :call <sid>TabPageMappings()<cr>
 
 " Create a new vim buffer for on-the-fly experiments.
 " Inspired by Gary Bernhardt.
-function! s:VimScratchBuffer()
-    let tmpfile = tempname().'.vim'
-    execute 'vsplit '.tmpfile | set bufhidden=wipe
+function! s:VimScratchBuffer(path) abort
+    execute 'vsplit '.a:path
+    set bufhidden=wipe
 endfunction
 
-nnoremap <silent> <leader>e :call <sid>VimScratchBuffer()<cr>
+nnoremap <silent> <leader>e :call <sid>VimScratchBuffer(tempname().'.vim')<cr>
+nnoremap <silent> <leader>E :call <sid>VimScratchBuffer($MYVIMRC)<cr>
 
 "== File types ===============================================================
 
