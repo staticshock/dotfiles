@@ -411,9 +411,3 @@ nnoremap <leader>c :cd %:p:h \| :pwd<cr>
 
 " Generic test runner mapping
 nnoremap <leader>t :nnoremap <lt>leader>t :w \\| !./%<lt>cr><c-f>4h
-
-function! ShowMessages(cmd)
-    redir => s | sil! execute a:cmd | redir END
-    new | set buftype=nofile bufhidden=wipe noswapfile
-    call setline(1, split(s, '\n'))
-endfunction
