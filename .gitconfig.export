@@ -9,7 +9,7 @@
 [alias]
 	hist = log --oneline --graph --decorate -n 20
 	trees = log --format=\"%h %T\"
-	tree = !git --no-pager show -s --format=\"%T\"
+	tree = show -s --format=\"%T\"
 	mod = submodule
 	note = notes
 [diff]
