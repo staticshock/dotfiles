@@ -125,3 +125,8 @@
 	url = https://github.com/klen/python-mode
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/vim-dentures"]
+	path = .vim/bundle/vim-dentures
+	url = https://github.com/qstrahl/vim-dentures
+	ignore = dirty
+	branch = master
