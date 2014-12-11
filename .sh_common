@@ -145,6 +145,9 @@ resolve_real_exe_path() {
 [[ -d /usr/local/bin ]] && PATH=/usr/local/bin:$PATH
 [[ -d /usr/local/sbin ]] && PATH=/usr/local/sbin:$PATH
 
+# Prefix misc binaries to $PATH
+[[ -d ~/bin ]] && PATH=$HOME/bin:$PATH
+
 # Amend bash completion
 arc_path=$(resolve_real_exe_path arc)
 if (( $? == 0 )); then
