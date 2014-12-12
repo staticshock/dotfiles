@@ -348,6 +348,39 @@ endfunction
 
 autocmd vimrc FileType javascript call s:JavascriptFileType()
 
+" Reformats rst table
+function! s:FormatRstTable()
+    let saved_cursor = getcurpos()
+    " Trim all row separators to be super tiny (+-+-+...)
+    '{,'}g/^+-/s/-\+/-/g
+    '{,'}g/^+=/s/=\+/=/g
+    " Normalize columns
+    Tabularize /\(+\||\)/
+    " Fill in the gaps in row separators
+    '{,'}g/^+ -/s/ /-/g
+    '{,'}g/^+ =/s/ /=/g
+    call setpos('.', saved_cursor)
+endfunction
+
+function! s:WrapRstTableCellLine()
+    " Delete remainder of line
+    execute "normal d/\\ze\\s\\+|$\<cr>"
+    let saved_cursor = getcurpos()
+    " Clone current line
+    copy .
+    " Clean it out and fill it with the deleted text
+    s/[^|]/ /g
+    call setpos('.', saved_cursor)
+    execute "normal jT|p"
+endfunction
+
+function! s:RstFileType()
+    nnoremap <silent> <leader>ft :silent call <sid>FormatRstTable()<cr>
+    nnoremap <silent> <leader>fw :silent call <sid>WrapRstTableCellLine()<cr>
+endfunction
+
+autocmd vimrc FileType rst call s:RstFileType()
+
 "== Colors ===================================================================
 
 " Switch syntax highlighting on, when the terminal has colors
