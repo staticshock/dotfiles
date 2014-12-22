@@ -128,6 +128,36 @@ endfunction
 "   - Reset signs for vim-signify
 nnoremap <silent> <c-l> :nohlsearch \| call RedrawExtra()<cr><c-l>
 
+function! GetVisualSelection()
+    let orig_a = ['a', getreg('a'), getregtype('a')]
+    normal! gv"ay
+    let selection = [@a, getregtype('a')]
+    call call('setreg', orig_a)
+    return selection
+endfunction
+
+function! GetVisualSelectionAsRegex()
+    let [value, regtype] = GetVisualSelection()
+    let [p_start, p_linesep, p_end] =
+                \ regtype =~ '\d\+' ? ['\V', '\.\*\n\.\*', ''] :
+                \ regtype ==# 'V'   ? ['\V\^', '\n', '\$'] :
+                \                     ['\V', '\n', '']
+    return p_start.join(split(escape(value, '\'), "\n"), p_linesep).p_end
+endfunction
+
+function! DoSearch(expr, flags)
+    let @/ = a:expr
+    call histadd("/", @/)
+    execute 'normal! '.(a:flags =~# 'r' ? 'N' : 'n')
+endfunction
+
+" Search for line under cursor
+nnoremap <silent> <leader>n :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '')<cr>
+nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r')<cr>
+" Search for visual selection
+vnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '')<cr>
+vnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r')<cr>
+
 "== Whitespace ===============================================================
 
 " By default, indent with 4 spaces, and don't use softtabstop
