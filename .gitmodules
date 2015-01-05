@@ -20,11 +20,6 @@
 	url = https://github.com/b4winckler/vim-angry
 	ignore = dirty
 	branch = master
-[submodule ".vim/bundle/vim-buffalo"]
-	path = .vim/bundle/vim-buffalo
-	url = https://github.com/Raimondi/vim-buffalo
-	ignore = dirty
-	branch = master
 [submodule ".vim/bundle/vim-fanfingtastic"]
 	path = .vim/bundle/vim-fanfingtastic
 	url = http://github.com/dahu/vim-fanfingtastic

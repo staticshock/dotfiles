@@ -262,6 +262,9 @@ endfunction
 
 autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
 
+" Show hidden buffers
+nnoremap <leader>l :execute (exists(':CtrlP') ? 'CtrlPBuffer' : 'ls')<cr>
+
 function! s:ViewportMappings()
     let [ystep, xstep] = [5, 10]
     " Move viewport
