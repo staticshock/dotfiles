@@ -477,3 +477,11 @@ nnoremap <leader>c :cd %:p:h \| :pwd<cr>
 
 " Generic test runner mapping
 nnoremap <leader>t :nnoremap <lt>leader>t :w \\| !./%<lt>cr><c-f>4h
+
+" Define all remaining <leader>[a-zA-Z] mappings
+for ch in split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '\zs')
+    if mapcheck('<leader>' . ch, "n") == ""
+        let cmd = 'nnoremap <leader>%s :<c-u>echoerr "Unassigned mapping"<cr>'
+        execute printf(cmd, ch)
+    endif
+endfor
