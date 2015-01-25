@@ -4,7 +4,7 @@ set nocompatible
 " case this file is being sourced a second time.
 augroup vimrc | execute 'autocmd!' | augroup END
 
-" Move <leader> from '\' to ' '
+" Use <space> as <leader> instead of '\'
 let mapleader = ' '
 
 "== General ==================================================================
@@ -39,7 +39,6 @@ set nostartofline
 " Smart tab completion for vim commands
 set wildmenu wildmode=list:longest,full
 " Case-insensitive file name completion
-" http://stackoverflow.com/questions/3686841/vim-case-insensitive-filename-completion
 if version >= 730
     set wildignorecase
 endif
@@ -72,24 +71,19 @@ silent! execute pathogen#infect()
 
 "== Temp files ===============================================================
 
-if has("vms")
-    " Don't keep a backup file, use versions instead
-    set nobackup
-else
-    " Make a backup before overwriting a file
-    set backup
-    " Persist undo history across sessions
-    set undofile
-endif
+" Make a backup before overwriting a file
+set backup
+" Persist undo history across sessions
+set undofile
 
 " Temp files
 if has("win32")
-    " Directory for swap files
-    set directory=$TEMP,$TMP,.
-    " Don't overwrite symlinks in Windows
-    set backupcopy=yes
+  " Directory for swap files
+  set directory=$TEMP,$TMP,.
+  " Don't overwrite symlinks in Windows
+  set backupcopy=yes
 else
-    set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+  set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 endif
 " Directory for backups, which happen before every write
 let &backupdir=&directory
@@ -99,9 +93,9 @@ let &undodir=&directory
 " Credit: tpope
 " Delete swapfiles for unmodified buffers
 autocmd vimrc CursorHold,BufWritePost,BufReadPost,BufLeave *
-            \ if !$VIMSWAP && isdirectory(expand("<amatch>:h")) |
-            \   let &swapfile = &modified |
-            \ endif
+      \ if !$VIMSWAP && isdirectory(expand("<amatch>:h")) |
+      \   let &swapfile = &modified |
+      \ endif
 
 "== Search ===================================================================
 
@@ -116,39 +110,39 @@ nohlsearch
 nnoremap <silent> <leader>h :set hlsearch!<cr>
 
 function! RedrawExtra()
-    diffupdate
-    if exists('b:sy') && b:sy.active
-        call sy#start()
-    endif
+  diffupdate
+  if exists('b:sy') && b:sy.active
+    call sy#start()
+  endif
 endfunction
 
 " When forcing a screen redraw:
 "   - Stop highlighting current search term
 "   - Update the diff
 "   - Reset signs for vim-signify
-nnoremap <silent> <c-l> :nohlsearch \| call RedrawExtra()<cr><c-l>
+nnoremap <silent> <c-l> :<c-u>nohlsearch \| call RedrawExtra()<cr><c-l>
 
 function! GetVisualSelection()
-    let orig_a = ['a', getreg('a'), getregtype('a')]
-    normal! gv"ay
-    let selection = [@a, getregtype('a')]
-    call call('setreg', orig_a)
-    return selection
+  let orig_a = ['a', getreg('a'), getregtype('a')]
+  normal! gv"ay
+  let selection = [@a, getregtype('a')]
+  call call('setreg', orig_a)
+  return selection
 endfunction
 
 function! GetVisualSelectionAsRegex()
-    let [value, regtype] = GetVisualSelection()
-    let [p_start, p_linesep, p_end] =
-                \ regtype =~ '\d\+' ? ['\V', '\.\*\n\.\*', ''] :
-                \ regtype ==# 'V'   ? ['\V\^', '\n', '\$'] :
-                \                     ['\V', '\n', '']
-    return p_start.join(split(escape(value, '\'), "\n"), p_linesep).p_end
+  let [value, regtype] = GetVisualSelection()
+  let [p_start, p_linesep, p_end] =
+        \ regtype =~ '\d\+' ? ['\V', '\.\*\n\.\*', ''] :
+        \ regtype ==# 'V'   ? ['\V\^', '\n', '\$'] :
+        \                     ['\V', '\n', '']
+  return p_start.join(split(escape(value, '\'), "\n"), p_linesep).p_end
 endfunction
 
 function! DoSearch(expr, flags)
-    let @/ = a:expr
-    call histadd("/", @/)
-    execute 'normal! '.(a:flags =~# 'r' ? 'N' : 'n')
+  let @/ = a:expr
+  call histadd("/", @/)
+  execute 'normal! '.(a:flags =~# 'r' ? 'N' : 'n')
 endfunction
 
 " Search for line under cursor
@@ -170,18 +164,18 @@ set listchars=nbsp:¬,tab:>-,trail:·,eol:$
 
 " Toggle list mode
 function! ToggleListMode()
-    if !&list
-        let whitespace_settings =
-            \ 'filetype=' . &ft .
-            \ ' tabstop=' . &ts .
-            \ ' softtabstop=' . &sts .
-            \ ' shiftwidth=' . &sw .
-            \ (&et ? ' ' : ' no') . 'expandtab'
-        echo whitespace_settings
-    else
-        echo
-    endif
-    set list!
+  if !&list
+    let whitespace_settings =
+          \ 'filetype=' . &ft .
+          \ ' tabstop=' . &ts .
+          \ ' softtabstop=' . &sts .
+          \ ' shiftwidth=' . &sw .
+          \ (&et ? ' ' : ' no') . 'expandtab'
+    echo whitespace_settings
+  else
+    echo
+  endif
+  set list!
 endfunction
 
 " Toggle list mode and look at whitespace settings
@@ -200,7 +194,7 @@ nnoremap <silent> <leader>S :%s/\s\+$//e<cr>
 nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
 
 function! FormatJson() range
-    python << EOF
+  python << EOF
 import vim, json
 firstline = int(vim.eval("a:firstline"))
 lastline = int(vim.eval("a:lastline"))
@@ -223,14 +217,14 @@ nnoremap <leader>w :%s/^\(=\+\)\s*\(.\{-}\)\s*\(=\+\)\s*/\1= \2 \3=/e<cr>
 set dictionary=/usr/share/dict/words
 
 function! TabCompletion(...)
-    let col = col('.') - 1
-    if !col || getline('.')[col-1] !~ '\k'
-        return "\<tab>"
-    elseif a:0 > 0 && a:1 == 'prev'
-        return "\<c-p>"
-    else
-        return "\<c-n>"
-    endif
+  let col = col('.') - 1
+  if !col || getline('.')[col-1] !~ '\k'
+    return "\<tab>"
+  elseif a:0 > 0 && a:1 == 'prev'
+    return "\<c-p>"
+  else
+    return "\<c-n>"
+  endif
 endfunction
 
 " Tab / shift-tab shortcuts for i_^x^n and i_^x^p
@@ -253,11 +247,11 @@ set scrolloff=3
 " a file on gvim), or when jumping to the first line, or when opening
 " gitcommit or gitrebase buffers.
 function! s:JumpToLastKnownCursorPosition()
-    if line("'\"") <= 1 | return | endif
-    if line("'\"") > line("$") | return | endif
-    " Ignore git commit messages and git rebase scripts
-    if expand("%") =~# '\(^\|/\)\.git/' | return | endif
-    execute "normal! g`\"" |
+  if line("'\"") <= 1 | return | endif
+  if line("'\"") > line("$") | return | endif
+  " Ignore git commit messages and git rebase scripts
+  if expand("%") =~# '\(^\|/\)\.git/' | return | endif
+  execute "normal! g`\"" |
 endfunction
 
 autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
@@ -266,63 +260,63 @@ autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
 nnoremap <leader>l :execute (exists(':CtrlP') ? 'CtrlPBuffer' : 'ls')<cr>
 
 function! s:ViewportMappings()
-    let [ystep, xstep] = [5, 10]
-    " Move viewport
-    execute 'nnoremap <left> '.xstep.'zh'
-    execute 'nnoremap <right> '.xstep.'zl'
-    execute 'nnoremap <up> '.ystep.'<c-y>'
-    execute 'nnoremap <down> '.ystep.'<c-e>'
-    " Move viewport a bit faster
-    execute 'nnoremap <s-left> '.xstep*3.'zh'
-    execute 'nnoremap <s-right> '.xstep*3.'zl'
-    execute 'nnoremap <s-up> '.ystep*3.'<c-y>'
-    execute 'nnoremap <s-down> '.ystep*3.'<c-e>'
+  let [ystep, xstep] = [5, 10]
+  " Move viewport
+  execute 'nnoremap <left> '.xstep.'zh'
+  execute 'nnoremap <right> '.xstep.'zl'
+  execute 'nnoremap <up> '.ystep.'<c-y>'
+  execute 'nnoremap <down> '.ystep.'<c-e>'
+  " Move viewport a bit faster
+  execute 'nnoremap <s-left> '.xstep*3.'zh'
+  execute 'nnoremap <s-right> '.xstep*3.'zl'
+  execute 'nnoremap <s-up> '.ystep*3.'<c-y>'
+  execute 'nnoremap <s-down> '.ystep*3.'<c-e>'
 endfunction
 
 function! s:FoldMappings()
-    " Navigate to next/previous fold
-    nnoremap <up> zk
-    nnoremap <down> zj
-    " Open/close fold under cursor
-    nnoremap <left> zc
-    nnoremap <s-left> zC
-    nnoremap <right> zo
-    nnoremap <s-right> zO
-    " Create folds
-    vnoremap <left> zf
+  " Navigate to next/previous fold
+  nnoremap <up> zk
+  nnoremap <down> zj
+  " Open/close fold under cursor
+  nnoremap <left> zc
+  nnoremap <s-left> zC
+  nnoremap <right> zo
+  nnoremap <s-right> zO
+  " Create folds
+  vnoremap <left> zf
 endfunction
 
 function! s:BufferMappings()
-    " Cycle buffers
-    nnoremap <silent> <left> :bprev<cr>
-    nnoremap <silent> <right> :bnext<cr>
-    nnoremap <silent> <up> :bprev<cr>
-    nnoremap <silent> <down> :bnext<cr>
+  " Cycle buffers
+  nnoremap <silent> <left> :bprev<cr>
+  nnoremap <silent> <right> :bnext<cr>
+  nnoremap <silent> <up> :bprev<cr>
+  nnoremap <silent> <down> :bnext<cr>
 endfunction
 
 function! s:WindowMappings()
-    " Switch focus to adjacent window
-    nnoremap <left> <c-w>h
-    nnoremap <right> <c-w>l
-    nnoremap <up> <c-w>k
-    nnoremap <down> <c-w>j
-    " Move active window
-    nnoremap <s-left> <c-w>H
-    nnoremap <s-right> <c-w>L
-    nnoremap <s-up> <c-w>K
-    nnoremap <s-down> <c-w>J
-    " Discard unfocused windows
-    " (disabled because it interferes with quickfix usage)
-    "nnoremap <silent> <cr> :only<cr>
+  " Switch focus to adjacent window
+  nnoremap <left> <c-w>h
+  nnoremap <right> <c-w>l
+  nnoremap <up> <c-w>k
+  nnoremap <down> <c-w>j
+  " Move active window
+  nnoremap <s-left> <c-w>H
+  nnoremap <s-right> <c-w>L
+  nnoremap <s-up> <c-w>K
+  nnoremap <s-down> <c-w>J
+  " Discard unfocused windows
+  " (disabled because it interferes with quickfix usage)
+  "nnoremap <silent> <cr> :only<cr>
 endfunction
 
 function! s:TabPageMappings()
-    " Cycle tabs
-    nnoremap <silent> <left> :tabprev<cr>
-    nnoremap <silent> <right> :tabnext<cr>
-    " Move active tab relative to other tabs
-    nnoremap <silent> <s-left> :tabmove -1<cr>
-    nnoremap <silent> <s-right> :tabmove +1<cr>
+  " Cycle tabs
+  nnoremap <silent> <left> :tabprev<cr>
+  nnoremap <silent> <right> :tabnext<cr>
+  " Move active tab relative to other tabs
+  nnoremap <silent> <s-left> :tabmove -1<cr>
+  nnoremap <silent> <s-right> :tabmove +1<cr>
 endfunction
 
 " Enable various navigation shortcuts with <leader>k.
@@ -338,8 +332,8 @@ nnoremap <silent> <leader>kt :call <sid>TabPageMappings()<cr>
 " Create a new vim buffer for on-the-fly experiments.
 " Inspired by Gary Bernhardt.
 function! s:VimScratchBuffer(path) abort
-    execute 'vsplit '.a:path
-    set bufhidden=wipe
+  execute 'vsplit '.a:path
+  set bufhidden=wipe
 endfunction
 
 nnoremap <silent> <leader>e :call <sid>VimScratchBuffer(tempname().'.vim')<cr>
@@ -354,66 +348,66 @@ filetype plugin indent on
 autocmd vimrc BufNewFile,BufRead *.rul set filetype=ishd
 
 function! s:VimFileType()
-    " Show a line at 79
-    setlocal colorcolumn=79
-    " Open vim help for word under cursor
-    setlocal keywordprg=:help
-    " Save and source current vim buffer
-    nnoremap <silent> <buffer> <leader>x
-                \ :silent update <bar> source % <bar> execute 'setf '.&ft<cr>
+  setlocal tabstop=2 shiftwidth=2
+  " Show a line at 79
+  setlocal colorcolumn=79
+  " Open vim help for word under cursor
+  setlocal keywordprg=:help
+  " Save and source current vim buffer
+  nnoremap <silent> <buffer> <leader>x
+        \ :silent update <bar> source % <bar> execute 'setf '.&ft<cr>
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
 
 function! s:JavascriptFileType()
-    setlocal makeprg=jshint
-    setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
-    if executable(&makeprg)
-        " Find the nearest .jshintrc
-        let config_path = findfile(".jshintrc", expand("%:p:h").";")
-        if config_path != ''
-            let &l:makeprg .= printf(" --config %s", config_path)
-        endif
-        command! -buffer Make
-                    \ silent make % | silent redraw! | silent botright cwindow
-    else
-        execute "command! -buffer Make echoerr 'Bad jshint path: " .
-                    \ jshint_path . "'"
+  setlocal makeprg=jshint
+  setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
+  if executable(&makeprg)
+    " Find the nearest .jshintrc
+    let config_path = findfile(".jshintrc", expand("%:p:h").";")
+    if config_path != ''
+      let &l:makeprg .= printf(" --config %s", config_path)
     endif
-    nnoremap <buffer> <F7> :<c-u>Make<cr>
+    command! -buffer Make
+          \ silent make % | silent redraw! | silent botright cwindow
+  else
+    execute "command! -buffer Make echoerr 'Bad jshint path: ".jshint_path."'"
+  endif
+  nnoremap <buffer> <F7> :<c-u>Make<cr>
 endfunction
 
 autocmd vimrc FileType javascript call s:JavascriptFileType()
 
 " Reformats rst table
 function! s:FormatRstTable()
-    let saved_cursor = getcurpos()
-    " Trim all row separators to be super tiny (+-+-+...)
-    '{,'}g/^+-/s/-\+/-/g
-    '{,'}g/^+=/s/=\+/=/g
-    " Normalize columns
-    Tabularize /\(+\||\)/
-    " Fill in the gaps in row separators
-    '{,'}g/^+ -/s/ /-/g
-    '{,'}g/^+ =/s/ /=/g
-    call setpos('.', saved_cursor)
+  let saved_cursor = getcurpos()
+  " Trim all row separators to be super tiny (+-+-+...)
+  '{,'}g/^+-/s/-\+/-/g
+  '{,'}g/^+=/s/=\+/=/g
+  " Normalize columns
+  Tabularize /\(+\||\)/
+  " Fill in the gaps in row separators
+  '{,'}g/^+ -/s/ /-/g
+  '{,'}g/^+ =/s/ /=/g
+  call setpos('.', saved_cursor)
 endfunction
 
 function! s:WrapRstTableCellLine()
-    " Delete remainder of line
-    execute "normal d/\\ze\\s\\+|$\<cr>"
-    let saved_cursor = getcurpos()
-    " Clone current line
-    copy .
-    " Clean it out and fill it with the deleted text
-    s/[^|]/ /g
-    call setpos('.', saved_cursor)
-    execute "normal jT|p"
+  " Delete remainder of line
+  execute "normal d/\\ze\\s\\+|$\<cr>"
+  let saved_cursor = getcurpos()
+  " Clone current line
+  copy .
+  " Clean it out and fill it with the deleted text
+  s/[^|]/ /g
+  call setpos('.', saved_cursor)
+  execute "normal jT|p"
 endfunction
 
 function! s:RstFileType()
-    nnoremap <silent> <leader>ft :silent call <sid>FormatRstTable()<cr>
-    nnoremap <silent> <leader>fw :silent call <sid>WrapRstTableCellLine()<cr>
+  nnoremap <silent> <leader>ft :silent call <sid>FormatRstTable()<cr>
+  nnoremap <silent> <leader>fw :silent call <sid>WrapRstTableCellLine()<cr>
 endfunction
 
 autocmd vimrc FileType rst call s:RstFileType()
@@ -423,25 +417,25 @@ autocmd vimrc FileType rst call s:RstFileType()
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
-    syntax on
+  syntax on
 endif
 
 function! SetColorScheme(...)
-    for name in a:000
-        try
-            execute 'colorscheme ' . name
-            break
-        catch /^Vim\%((\a\+)\)\=:E185/
-        endtry
-    endfor
+  for name in a:000
+    try
+      execute 'colorscheme ' . name
+      break
+    catch /^Vim\%((\a\+)\)\=:E185/
+    endtry
+  endfor
 endfunction
 
 if has("gui_running")
-    call SetColorScheme("desert256", "desert")
+  call SetColorScheme("desert256", "desert")
 elseif &t_Co == 256
-    call SetColorScheme("busybee", "desert256", "desert")
+  call SetColorScheme("busybee", "desert256", "desert")
 else
-    call SetColorScheme("desert")
+  call SetColorScheme("desert")
 endif
 
 " Change the paren matching color to stand out in the chosen color scheme.
@@ -452,26 +446,26 @@ autocmd vimrc VimEnter * highlight MatchParen ctermbg=magenta
 "== Gvim =====================================================================
 
 if has("gui_running")
-    set lines=40 columns=130 " Default height / width
-    set guioptions-=m  " Disable menu bar
-    set guioptions-=T  " Disable toolbar
-    set guioptions-=r  " Disable right-hand scroll bar
-    set mouse-=a       " Disable mouse
-    set shell=bash     " Avoid zsh on dumb terminals
+  set lines=40 columns=130 " Default height / width
+  set guioptions-=m  " Disable menu bar
+  set guioptions-=T  " Disable toolbar
+  set guioptions-=r  " Disable right-hand scroll bar
+  set mouse-=a       " Disable mouse
+  set shell=bash     " Avoid zsh on dumb terminals
 endif
 
 " OS-specific tweaks
 if has("gui_gtk2")
-    set guifont=Inconsolata\ 12
+  set guifont=Inconsolata\ 12
 elseif has("gui_macvim")
-    set guifont=Menlo\ Regular:h14
+  set guifont=Menlo\ Regular:h14
 elseif has("gui_win32")
-    set guifont=Consolas:h10:cANSI
-    " Disable tearoff menu entries
-    set guioptions-=t
+  set guifont=Consolas:h10:cANSI
+  " Disable tearoff menu entries
+  set guioptions-=t
 endif
 
-"== Misc utils ===============================================================
+"== Misc =====================================================================
 
 " Open a file from the current buffer's dir
 "nnoremap <leader>e :e <C-R>=expand("%:p:h") . "/" <cr>
@@ -483,25 +477,25 @@ nnoremap <leader>c :cd %:p:h \| :pwd<cr>
 nnoremap <leader>t :nnoremap <lt>leader>t :w \\| !./%<lt>cr><c-f>4h
 
 function! s:LoadAdditionalVimScript(name, path) abort
-    " Look for an additional script between a:path and file system root
-    let extra_script = resolve(findfile(a:name, escape(a:path, ' ').';'))
-    if extra_script == '' | return | endif
+  " Look for an additional script between a:path and file system root
+  let extra_script = resolve(findfile(a:name, escape(a:path, ' ').';'))
+  if extra_script == '' | return | endif
 
-    " Avoid re-loading scripts that have already been loaded
-    redir => scriptnames_output | scriptnames | redir END
-    for line in split(scriptnames_output, '\r\?\n')
-        let script_path = substitute(line, '\v^\s*\d+:\s+', '', '')
-        if resolve(fnamemodify(path, ':p')) == extra_script | return | endif
-    endfor
+  " Avoid re-loading scripts that have already been loaded
+  redir => scriptnames_output | scriptnames | redir END
+  for line in split(scriptnames_output, '\r\?\n')
+    let script_path = substitute(line, '\v^\s*\d+:\s+', '', '')
+    if resolve(fnamemodify(path, ':p')) == extra_script | return | endif
+  endfor
 
-    exec 'source '.escape(extra_script, ' ')
+  exec 'source '.escape(extra_script, ' ')
 endfunction
 silent call s:LoadAdditionalVimScript('.vimrclocal', $PWD)
 
 " Define all remaining <leader>[a-zA-Z] mappings
 for ch in split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '\zs')
-    if mapcheck('<leader>' . ch, "n") == ""
-        let cmd = 'nnoremap <leader>%s :<c-u>echoerr "Unassigned mapping"<cr>'
-        execute printf(cmd, ch)
-    endif
+  if mapcheck('<leader>' . ch, "n") == ""
+    let cmd = 'nnoremap <leader>%s :<c-u>echoerr "Unassigned mapping"<cr>'
+    execute printf(cmd, ch)
+  endif
 endfor
