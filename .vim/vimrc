@@ -366,17 +366,21 @@ endfunction
 autocmd vimrc FileType vim call s:VimFileType()
 
 function! s:JavascriptFileType()
-    let jshint_path = 'jshint'
-    if executable(jshint_path)
-        setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
-        let &l:makeprg=jshint_path
+    setlocal makeprg=jshint
+    setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m,%-G%.%#
+    if executable(&makeprg)
+        " Find the nearest .jshintrc
+        let config_path = findfile(".jshintrc", expand("%:p:h").";")
+        if config_path != ''
+            let &l:makeprg .= printf(" --config %s", config_path)
+        endif
         command! -buffer Make
-                    \ silent make % | silent redraw! | silent cwindow |
-                    \ silent wincmd p
+                    \ silent make % | silent redraw! | silent botright cwindow
     else
         execute "command! -buffer Make echoerr 'Bad jshint path: " .
                     \ jshint_path . "'"
     endif
+    nnoremap <buffer> <F7> :<c-u>Make<cr>
 endfunction
 
 autocmd vimrc FileType javascript call s:JavascriptFileType()
