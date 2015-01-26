@@ -16,6 +16,7 @@ alias tree="tree --charset=ascii"
 alias nosetests='nosetests --no-byte-compile'
 alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
+alias bp=bpython
 
 # Context
 alias h=hostname
