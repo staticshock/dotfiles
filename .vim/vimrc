@@ -482,6 +482,22 @@ nnoremap <leader>c :cd %:p:h \| :pwd<cr>
 " Generic test runner mapping
 nnoremap <leader>t :nnoremap <lt>leader>t :w \\| !./%<lt>cr><c-f>4h
 
+function! s:LoadAdditionalVimScript(name, path) abort
+    " Look for an additional script between a:path and file system root
+    let extra_script = resolve(findfile(a:name, escape(a:path, ' ').';'))
+    if extra_script == '' | return | endif
+
+    " Avoid re-loading scripts that have already been loaded
+    redir => scriptnames_output | scriptnames | redir END
+    for line in split(scriptnames_output, '\r\?\n')
+        let script_path = substitute(line, '\v^\s*\d+:\s+', '', '')
+        if resolve(fnamemodify(path, ':p')) == extra_script | return | endif
+    endfor
+
+    exec 'source '.escape(extra_script, ' ')
+endfunction
+silent call s:LoadAdditionalVimScript('.vimrclocal', $PWD)
+
 " Define all remaining <leader>[a-zA-Z] mappings
 for ch in split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '\zs')
     if mapcheck('<leader>' . ch, "n") == ""
