@@ -485,7 +485,7 @@ function! s:LoadAdditionalVimScript(name, path) abort
   redir => scriptnames_output | scriptnames | redir END
   for line in split(scriptnames_output, '\r\?\n')
     let script_path = substitute(line, '\v^\s*\d+:\s+', '', '')
-    if resolve(fnamemodify(path, ':p')) == extra_script | return | endif
+    if resolve(fnamemodify(script_path, ':p')) == extra_script | return | endif
   endfor
 
   exec 'source '.escape(extra_script, ' ')
