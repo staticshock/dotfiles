@@ -372,7 +372,7 @@ function! s:JavascriptFileType()
     command! -buffer Make
           \ silent make % | silent redraw! | silent botright cwindow
   else
-    execute "command! -buffer Make echoerr 'Bad jshint path: ".jshint_path."'"
+    execute "command! -buffer Make echoerr 'Bad makeprg: ".&makeprg."'"
   endif
   nnoremap <buffer> <F7> :<c-u>Make<cr>
 endfunction
