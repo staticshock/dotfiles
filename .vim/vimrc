@@ -149,8 +149,8 @@ endfunction
 nnoremap <silent> <leader>n :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '')<cr>
 nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r')<cr>
 " Search for visual selection
-vnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '')<cr>
-vnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r')<cr>
+xnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '')<cr>
+xnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r')<cr>
 
 "== Whitespace ===============================================================
 
@@ -185,7 +185,7 @@ nnoremap <silent> <leader>s :call ToggleListMode()<cr>
 
 " Use Q to format instead of entering ex mode
 nnoremap Q gq
-vnoremap Q gq
+xnoremap Q gq
 
 " Strip trailing whitespace
 nnoremap <silent> <leader>S :%s/\s\+$//e<cr>
@@ -283,7 +283,7 @@ function! s:FoldMappings()
   nnoremap <right> zo
   nnoremap <s-right> zO
   " Create folds
-  vnoremap <left> zf
+  xnoremap <left> zf
 endfunction
 
 function! s:BufferMappings()
