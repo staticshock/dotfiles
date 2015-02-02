@@ -39,7 +39,7 @@ set nostartofline
 " Smart tab completion for vim commands
 set wildmenu wildmode=list:longest,full
 " Case-insensitive file name completion
-if version >= 730
+if version >= 703
     set wildignorecase
 endif
 " Keep a longer history (default is 20)
