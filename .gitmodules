@@ -130,3 +130,8 @@
 	url = https://github.com/tpope/vim-unimpaired
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/vim-markdown"]
+	path = .vim/bundle/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown
+	ignore = dirty
+	branch = master
