@@ -187,6 +187,13 @@ $PATH
     [[ $- == *i* ]] && source "$HOME/.rvm/scripts/rvm"
 fi
 
+# Go
+_default_go_env=$HOME/.goenv/default
+if [[ -d "$_default_go_env" ]]; then
+    export GOPATH=$_default_go_env
+    PATH=$PATH:$GOPATH/bin
+fi
+
 # Source extras
 [[ -d ~/.dotfiles/sh-extras ]] && for f in ~/.dotfiles/sh-extras/*; do
     source "$f"
