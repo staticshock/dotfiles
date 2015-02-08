@@ -319,6 +319,27 @@ function! s:TabPageMappings()
   nnoremap <silent> <s-right> :tabmove +1<cr>
 endfunction
 
+" Orig  +Delta = Result:
+" ''        +1 = 'HEAD~1'
+" 'HEAD'    +1 = 'HEAD~1'
+" 'HEAD~10' +1 = 'HEAD~11'
+" 'HEAD^2'  +1 = 'HEAD^2~1'
+" 'HEAD~1'  -1 = ''
+function! IncSignifyDiffScope(delta)
+  let options = g:signify_diffoptions
+  let base = get(options, 'git', 'HEAD')
+  let parts = split(base, '\~\ze\d\+$')
+  let offset = str2nr(get(parts, 1)) + a:delta
+  let options.git = offset > 0 ? get(parts, 0, 'HEAD') . '~' . offset : ''
+  call sy#start()
+  echo 'let g:signify_diffoptions.git =' options.git
+endfunction
+
+function! s:DiffMappings()
+  nnoremap <silent> <up> :call IncSignifyDiffScope(-1)<cr>
+  nnoremap <silent> <down> :call IncSignifyDiffScope(+1)<cr>
+endfunction
+
 " Enable various navigation shortcuts with <leader>k.
 " Mnemonic: 'k' = 'keys', since most of the mappings are arrow-key oriented.
 nnoremap <silent> <leader>kv :call <sid>ViewportMappings()<cr>
@@ -326,6 +347,7 @@ nnoremap <silent> <leader>kf :call <sid>FoldMappings()<cr>
 nnoremap <silent> <leader>kb :call <sid>BufferMappings()<cr>
 nnoremap <silent> <leader>kw :call <sid>WindowMappings()<cr>
 nnoremap <silent> <leader>kt :call <sid>TabPageMappings()<cr>
+nnoremap <silent> <leader>kd :call <sid>DiffMappings()<cr>
 
 "== Vim experimentation ======================================================
 
