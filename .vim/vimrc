@@ -183,10 +183,6 @@ nnoremap <silent> <leader>s :call ToggleListMode()<cr>
 
 "== Formatting & refactoring =================================================
 
-" Use Q to format instead of entering ex mode
-nnoremap Q gq
-xnoremap Q gq
-
 " Strip trailing whitespace
 nnoremap <silent> <leader>S :%s/\s\+$//e<cr>
 
@@ -258,6 +254,10 @@ autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
 
 " Show hidden buffers
 nnoremap <leader>l :execute (exists(':CtrlP') ? 'CtrlPBuffer' : 'ls')<cr>
+
+" Open quickfix window on Q
+nnoremap <silent> Q :<c-u>copen<cr>
+xnoremap <silent> Q :<c-u>copen<cr>
 
 function! s:ViewportMappings()
   let [ystep, xstep] = [5, 10]
