@@ -401,6 +401,12 @@ endfunction
 
 autocmd vimrc FileType javascript call s:JavascriptFileType()
 
+" JSON
+autocmd vimrc BufNewFile,BufRead .jshintrc setf json
+
+" https://github.com/elzr/vim-json
+let g:vim_json_syntax_conceal = 0
+
 " Reformats rst table
 function! s:FormatRstTable()
   let saved_cursor = getcurpos()
