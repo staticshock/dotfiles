@@ -17,7 +17,7 @@
 [difftool]
 	prompt = false
 [color]
-	ui = true
+	ui = auto
 [rebase]
 	autosquash = true
 [rerere]
