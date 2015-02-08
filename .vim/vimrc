@@ -63,6 +63,9 @@ autocmd vimrc FileType gitcommit,gitrebase setlocal nomodeline
 " Jump back in the jump list via shift-tab
 nnoremap <s-tab> <c-o>
 
+" Treat c_^x as i_^x (keyword completion)
+cnoremap <c-x> <c-f>i<c-x>
+
 " Save current buffer
 nmap <silent> <leader><leader> :update<cr><c-l>
 
