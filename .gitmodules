@@ -125,3 +125,8 @@
 	url = https://github.com/qstrahl/vim-dentures
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/vim-unimpaired"]
+	path = .vim/bundle/vim-unimpaired
+	url = https://github.com/tpope/vim-unimpaired
+	ignore = dirty
+	branch = master
