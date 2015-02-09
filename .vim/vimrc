@@ -412,6 +412,16 @@ autocmd vimrc BufNewFile,BufRead .jshintrc setf json
 " https://github.com/elzr/vim-json
 let g:vim_json_syntax_conceal = 0
 
+" Arcanist
+autocmd vimrc BufNewFile,BufRead .arcrc,.arcconfig,.arclint setf json
+autocmd vimrc BufNewFile,BufRead /tmp/edit.*/new-commit setf gitcommit
+autocmd vimrc BufNewFile,BufRead
+      \ /tmp/edit.*/differential-update-comments setf gitcommit
+" Insert 'exec' lines after a 'fixup' block
+autocmd vimrc FileType gitrebase nnoremap <buffer> <silent> <leader>ad
+      \ :<c-u>nohlsearch <bar>
+      \ g/^fixup.*\n\(fixup\)\@!/call append('.', 'exec arc diff --allow-untracked HEAD~')<cr>
+
 " Reformats rst table
 function! s:FormatRstTable()
   let saved_cursor = getcurpos()
