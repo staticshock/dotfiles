@@ -187,7 +187,9 @@ nnoremap <silent> <leader>s :call ToggleListMode()<cr>
 "== Formatting & refactoring =================================================
 
 " Strip trailing whitespace
-nnoremap <silent> <leader>S :%s/\s\+$//e<cr>
+nnoremap <silent> <leader>S :%s/\s\+$//e <bar>
+      \ call histdel('/', -1) <bar>
+      \ call setpos('.', getpos("''"))<cr>
 
 " Replace word under cursor
 nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
