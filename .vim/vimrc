@@ -251,7 +251,7 @@ function! s:JumpToLastKnownCursorPosition()
   if line("'\"") <= 1 | return | endif
   if line("'\"") > line("$") | return | endif
   " Ignore git commit messages and git rebase scripts
-  if expand("%") =~# '\(^\|/\)\.git/' | return | endif
+  if expand("%") =~# '\v(^|[\/])\.git[\/]' | return | endif
   execute "normal! g`\"" |
 endfunction
 
