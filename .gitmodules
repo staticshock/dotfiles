@@ -140,3 +140,8 @@
 	url = https://github.com/elzr/vim-json
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/vim-jinja"]
+	path = .vim/bundle/vim-jinja
+	url = https://github.com/mitsuhiko/vim-jinja
+	ignore = dirty
+	branch = master
