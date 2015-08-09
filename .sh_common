@@ -18,6 +18,11 @@ alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
 alias bp=bpython
 
+# Pager:
+#   -R = output raw ANSI color sequences
+#   -j10 = keep 10 lines of context above search match
+export LESS="-Rj10"
+
 # Context
 alias h=hostname
 alias parents='pstree --ascii --show-parents --show-pids --arguments --highlight-pid=$$ $$ | grep -e "" -e "${SHELL##*/}"'
