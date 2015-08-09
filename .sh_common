@@ -64,7 +64,24 @@ sedtest() {
 # Source control
 # http://stackoverflow.com/a/239358/419876
 alias svn-clean='svn status | grep ^\? | cut -c9- | xargs -I {} -d \\n rm -r {}'
-alias gitnp='git --no-pager'
+
+# Git aliases
+alias gst='git status -s'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gs='git show'
+alias gh='git log --oneline --graph --decorate -n25'
+alias gbm='gh --branches'
+alias ga='git add'
+alias gc='git commit -v'
+alias gb='git branch'
+alias gt='git tag'
+alias gcm='git checkout master'
+alias gco='git checkout'
+alias gcp='git cherry-pick'
+alias gr='git remote -v'
+gr-() { git checkout "$1" && git rebase -i -; }
+
 # Verify the spelling of an svn commit
 # Usage: spellcommit <repo> <commit number>
 spellcommit() {
