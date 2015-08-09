@@ -115,11 +115,6 @@
 	url = https://github.com/godlygeek/tabular
 	ignore = dirty
 	branch = master
-[submodule ".vim/bundle/python-mode"]
-	path = .vim/bundle/python-mode
-	url = https://github.com/klen/python-mode
-	ignore = dirty
-	branch = master
 [submodule ".vim/bundle/vim-dentures"]
 	path = .vim/bundle/vim-dentures
 	url = https://github.com/qstrahl/vim-dentures
