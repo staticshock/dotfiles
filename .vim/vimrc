@@ -264,6 +264,10 @@ nnoremap <leader>l :execute (exists(':CtrlP') ? 'CtrlPBuffer' : 'ls')<cr>
 nnoremap <silent> Q :<c-u>copen<cr>
 xnoremap <silent> Q :<c-u>copen<cr>
 
+" Save changes and unload buffer on QQ
+nnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
+xnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
+
 function! s:ViewportMappings()
   let [ystep, xstep] = [5, 10]
   " Move viewport
