@@ -145,3 +145,8 @@
 	url = https://github.com/mitsuhiko/vim-jinja
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/vim-coffee-script"]
+	path = .vim/bundle/vim-coffee-script
+	url = https://github.com/kchmck/vim-coffee-script
+	ignore = dirty
+	branch = master
