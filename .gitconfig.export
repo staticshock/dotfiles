@@ -24,3 +24,5 @@
 	enabled = true
 [tag]
 	sort = version:refname
+[column]
+	tag = auto
