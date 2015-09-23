@@ -1,6 +1,6 @@
 [submodule ".oh-my-zsh"]
 	path = .oh-my-zsh
-	url = http://github.com/robbyrussell/oh-my-zsh.git
+	url = https://github.com/robbyrussell/oh-my-zsh.git
 [submodule "mixins/apt-cyg"]
 	path = mixins/apt-cyg
 	url = https://github.com/rcmdnk/apt-cyg
@@ -22,7 +22,7 @@
 	branch = master
 [submodule ".vim/bundle/vim-fanfingtastic"]
 	path = .vim/bundle/vim-fanfingtastic
-	url = http://github.com/dahu/vim-fanfingtastic
+	url = https://github.com/dahu/vim-fanfingtastic
 	ignore = dirty
 	branch = master
 [submodule ".vim/bundle/vim-flake8"]
@@ -37,12 +37,12 @@
 	branch = master
 [submodule ".vim/bundle/vim-repeat"]
 	path = .vim/bundle/vim-repeat
-	url = http://github.com/tpope/vim-repeat
+	url = https://github.com/tpope/vim-repeat
 	ignore = dirty
 	branch = master
 [submodule ".vim/bundle/vim-surround"]
 	path = .vim/bundle/vim-surround
-	url = http://github.com/tpope/vim-surround.git
+	url = https://github.com/tpope/vim-surround.git
 	ignore = dirty
 	branch = master
 [submodule ".vim/bundle/vim-bitbake"]
