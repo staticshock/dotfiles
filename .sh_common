@@ -179,6 +179,12 @@ if (( $? == 0 )); then
     [[ -f "$arc_completion" ]] && . "$arc_completion"
 fi
 
+# Default python environment
+_default_python_env=$HOME/.pyenv/default
+if [[ -d "$_default_python_env" ]]; then
+    VIRTUAL_ENV_DISABLE_PROMPT=1 source $_default_python_env/bin/activate
+fi
+
 # Ruby on OS X
 if [[ -d /Library/Ruby/Gems/2.0.0 ]]; then
     export GEM_HOME="$HOME/.gem/ruby/2.0.0"
