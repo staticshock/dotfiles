@@ -277,6 +277,9 @@ xnoremap <silent> Q :<c-u>copen<cr>
 nnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
 xnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
 
+" Auto-open markdown folds
+autocmd vimrc Syntax mkd normal zR
+
 function! s:ViewportMappings()
   let [ystep, xstep] = [5, 10]
   " Move viewport
