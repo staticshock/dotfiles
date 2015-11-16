@@ -145,3 +145,8 @@
 	url = https://github.com/kchmck/vim-coffee-script
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/ag.vim"]
+	path = .vim/bundle/ag.vim
+	url = https://github.com/rking/ag.vim
+	ignore = dirty
+	branch = master

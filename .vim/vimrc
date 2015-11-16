@@ -159,6 +159,11 @@ nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\')
 xnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '')<cr>
 xnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r')<cr>
 
+" Search the file system using the_silver_searcher / ag.vim
+execute "nnoremap <leader>a :Ag "
+let g:ag_working_path_mode = "r"
+let g:ag_highlight = 1
+
 "== Whitespace ===============================================================
 
 " By default, indent with 4 spaces, and don't use softtabstop
