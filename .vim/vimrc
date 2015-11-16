@@ -423,7 +423,7 @@ endfunction
 autocmd vimrc FileType javascript call s:JavascriptFileType()
 
 " JSON
-autocmd vimrc BufNewFile,BufRead .jshintrc setf json
+autocmd vimrc BufNewFile,BufRead .jshintrc,.bowerrc setf json
 
 " https://github.com/elzr/vim-json
 let g:vim_json_syntax_conceal = 0
