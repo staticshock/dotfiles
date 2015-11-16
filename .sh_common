@@ -10,8 +10,8 @@ done
 
 # Add default args to some commands
 alias make="make --no-print-directory"
-alias grep="grep --exclude-dir=.svn --exclude-dir=.git"
-alias rgrep="grep -r"
+alias grep="grep -I --ignore-case --exclude-dir=.git --exclude-dir=.svn"
+alias rgrep="grep --recursive"
 alias tree="tree --charset=ascii"
 alias nosetests='nosetests --no-byte-compile'
 alias synergys="synergys -f --config ~/.synergyrc"
