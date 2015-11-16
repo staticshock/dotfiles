@@ -52,6 +52,8 @@ set nojoinspaces
 set clipboard=unnamedplus,unnamed,exclude:cons\|linux
 " Intuitive backspacing in insert mode
 set backspace=indent,eol,start
+" Skip the 'Reload?' prompt on :edit and :checktime whenever it's safe
+set autoread
 
 " Allow settings to be tweaked via comments within the source file. Override
 " distro default for number of lines checked for modelines. On OS X, for
@@ -114,6 +116,7 @@ nohlsearch
 nnoremap <silent> <leader>h :set hlsearch!<cr>
 
 function! RedrawExtra()
+  checktime
   diffupdate
   if exists('b:sy') && b:sy.active
     call sy#start()
