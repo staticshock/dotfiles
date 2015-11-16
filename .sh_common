@@ -99,7 +99,7 @@ fixspelling() {
 }
 
 # Misc
-alias freenode="irssi --connect=irc.freenode.org --nick=staticshock"
+alias freenode="weechat -r '/connect freenode'"
 alias get='sudo apt-fast install -y'
 # Swap the names of two files
 swap() {
