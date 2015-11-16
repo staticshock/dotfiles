@@ -26,3 +26,5 @@
 	sort = version:refname
 [column]
 	tag = auto
+[log]
+	mailmap = true
