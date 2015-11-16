@@ -38,9 +38,10 @@ set nowrap
 set nostartofline
 " Smart tab completion for vim commands
 set wildmenu wildmode=list:longest,full
+set wildignore+=*.pyc
 " Case-insensitive file name completion
-if version >= 703
-    set wildignorecase
+if exists("&wildignorecase")
+  set wildignorecase
 endif
 " Keep a longer history (default is 20)
 set history=10000
