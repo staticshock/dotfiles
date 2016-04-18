@@ -3,7 +3,6 @@
 	email = olegov@gmail.com
 	name = Anton Backer
 [core]
-	editor = vim
 	pager = less -FX
 	excludesfile = ~/.gitignore_global
 [alias]

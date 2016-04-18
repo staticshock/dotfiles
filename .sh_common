@@ -18,6 +18,8 @@ alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
 alias bp=bpython
 
+export EDITOR=vim
+
 # Pager:
 #   -R = output raw ANSI color sequences
 #   -j10 = keep 10 lines of context above search match
