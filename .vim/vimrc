@@ -27,7 +27,7 @@ set showcmd
 " Show cursor line/char position
 set ruler
 " Shorten feedback messages. :help shortmess
-set shortmess=atI
+set shortmess=astTI
 " Number lines relative to the cursor
 set number
 " Show matching brackets / parentheses
@@ -153,11 +153,20 @@ function! DoSearch(expr, flags)
 endfunction
 
 " Search for line under cursor
-nnoremap <silent> <leader>n :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '')<cr>
-nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r')<cr>
+nnoremap <silent> <leader>n :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r') <bar> let v:hlsearch=&hlsearch<cr>
 " Search for visual selection
-xnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '')<cr>
-xnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r')<cr>
+xnoremap <silent> <leader>n :<c-u>call DoSearch(GetVisualSelectionAsRegex(), '') <bar> let v:hlsearch=&hlsearch<cr>
+xnoremap <silent> <leader>N :<c-u>call DoSearch(GetVisualSelectionAsRegex(), 'r') <bar> let v:hlsearch=&hlsearch<cr>
+" Search for word under cursor (case sensitive)
+nnoremap <silent> * :<c-u>silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', '') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> # :<c-u>silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', 'r') <bar> let v:hlsearch=&hlsearch<cr>
+" Search for word under cursor (case insensitive; follows 'ignorecase')
+nnoremap <silent> <leader>* *
+nnoremap <silent> <leader># #
+" Search for visual selection
+xmap <silent> * <space>n
+xmap <silent> # <space>N
 
 " Search the file system using the_silver_searcher / ag.vim
 execute "nnoremap <leader>a :Ag "
