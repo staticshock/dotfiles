@@ -210,10 +210,20 @@ nnoremap com :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
 
 "== Formatting & refactoring =================================================
 
+" Credit: http://vimcasts.org/episodes/tidying-whitespace/
+function! Preserve(command)
+  " Save last search and cursor position
+  let search=@/
+  let [line, column] = [line("."), col(".")]
+  " Do the business
+  execute a:command
+  " Restore previous search history and cursor position
+  let @/=search
+  call cursor(line, column)
+endfunction
+
 " Strip trailing whitespace
-nnoremap <silent> <leader>S :%s/\s\+$//e <bar>
-      \ call histdel('/', -1) <bar>
-      \ call setpos('.', getpos("''"))<cr>
+nnoremap <leader>S :call Preserve("%s/\\s\\+$//e")<cr>
 
 " Replace word under cursor
 nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
