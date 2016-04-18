@@ -203,6 +203,11 @@ endfunction
 " Toggle list mode and look at whitespace settings
 nnoremap <silent> <leader>s :call ToggleListMode()<cr>
 
+" Unimpaired-style mappings to toggle mouse state
+nnoremap [om :set mouse=a ttymouse=xterm2<cr>
+nnoremap ]om :set mouse= ttymouse=<cr>
+nnoremap com :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
+
 "== Formatting & refactoring =================================================
 
 " Strip trailing whitespace
