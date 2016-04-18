@@ -228,23 +228,11 @@ nnoremap <leader>S :call Preserve("%s/\\s\\+$//e")<cr>
 " Replace word under cursor
 nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
 
-function! FormatJson() range
-  python << EOF
-import vim, json
-firstline = int(vim.eval("a:firstline"))
-lastline = int(vim.eval("a:lastline"))
-buf_range = vim.current.buffer.range(firstline, lastline)
-obj = json.loads("".join(buf_range))
-formatted = json.dumps(obj, indent=4)
-buf_range[:] = formatted.split("\n")
-EOF
-endfunction
-
-" Decrease mediawiki header importance (e.g. = -> ==, == -> ===)
-nnoremap <leader>w :%s/^\(=\+\)\s*\(.\{-}\)\s*\(=\+\)\s*/\1= \2 \3=/e<cr>
-" Remap lines of tab-delimited fields like like '183E002Z	97' into firmware
-" numbers like 'F183E002Z-007'
-"nnoremap <leader>x :%s/\(.*\)\t\(\d\+\)/\=printf("F%s-%03i",submatch(1),submatch(2)-89)/<cr>
+"autocmd vimrc FileType json setlocal equalprg=python\ -mjson.tool
+autocmd vimrc FileType json setlocal equalprg=python\ -c\ '
+      \import\ sys,json;
+      \json.dump(json.load(sys.stdin),sys.stdout,indent=2)
+      \'
 
 "== Auto-completion ==========================================================
 
