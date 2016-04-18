@@ -83,6 +83,7 @@ alias gco='git checkout'
 alias gcp='git cherry-pick'
 alias gr='git remote -v'
 gr-() { git checkout "$1" && git rebase -i -; }
+alias gm='vim x +Gmerge +"bdel x"'
 
 alias diff='GIT_DIR=/ git diff'
 
