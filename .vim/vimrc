@@ -112,8 +112,6 @@ set incsearch ignorecase smartcase
 set hlsearch
 " Don't auto-highlight the last search (relevant when $MYVIMRC is sourced)
 nohlsearch
-" Toggle search term highlighting
-nnoremap <silent> <leader>h :set hlsearch!<cr>
 
 function! RedrawExtra()
   checktime
