@@ -9,7 +9,8 @@
 [alias]
 	hist = log --oneline --graph --decorate -n 20
 	trees = log --format=\"%h %T\"
-	tree = show -s --format=\"%T\"
+	tree = show --no-patch --format=%T
+	hash = show --no-patch --format=%H
 	mod = submodule
 	note = notes
 [diff]
