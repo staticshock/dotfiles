@@ -20,6 +20,7 @@
 	ui = auto
 [rebase]
 	autosquash = true
+	autoStash = true
 [rerere]
 	enabled = true
 [tag]
@@ -28,3 +29,5 @@
 	tag = auto
 [log]
 	mailmap = true
+[pull]
+	rebase = true
