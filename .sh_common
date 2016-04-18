@@ -84,6 +84,8 @@ alias gcp='git cherry-pick'
 alias gr='git remote -v'
 gr-() { git checkout "$1" && git rebase -i -; }
 
+alias diff='GIT_DIR=/ git diff'
+
 # Verify the spelling of an svn commit
 # Usage: spellcommit <repo> <commit number>
 spellcommit() {
