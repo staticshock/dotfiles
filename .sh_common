@@ -9,7 +9,6 @@ for cmd in cp mv rm chmod chown rename; do
 done
 
 # Add default args to some commands
-alias make="make --no-print-directory"
 alias grep="grep -I --ignore-case --exclude-dir=.git --exclude-dir=.svn"
 alias rgrep="grep --recursive"
 alias tree="tree --charset=ascii"
@@ -20,10 +19,7 @@ alias bp=bpython
 
 export EDITOR=vim
 
-# Pager:
-#   -R = output raw ANSI color sequences
-#   -j10 = keep 10 lines of context above search match
-export LESS="-Rj10"
+export LESS="--RAW-CONTROL-CHARS --jump-target=10"
 
 # Context
 alias h=hostname
@@ -133,10 +129,6 @@ sha1sum-missing() {
         xargs -r sha1sum |
         tee -a "$sum_file"
     sort -k2 "$sum_file" -o "$sum_file"
-}
-
-socalc() {
-    soffice --calc "$1" >/dev/null 2>&1 <&1 &!
 }
 
 # Something like `readlink -f`, but works on OS X
