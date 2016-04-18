@@ -174,10 +174,13 @@ let g:ag_highlight = 1
 "== Whitespace ===============================================================
 
 " By default, indent with 4 spaces, and don't use softtabstop
-set tabstop=4 shiftwidth=4 expandtab
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " But prefer other indents for some specific file types
-autocmd vimrc FileType bitbake,gitconfig,cs,javascript setlocal noexpandtab
-autocmd vimrc FileType ruby setlocal tabstop=2 shiftwidth=2
+autocmd vimrc FileType bitbake,gitconfig,cs setlocal noexpandtab
+autocmd vimrc FileType ruby,html,htmljinja,htmldjango,yaml,sql,mysql,json
+      \ setlocal tabstop=2 softtabstop=2 shiftwidth=2
+autocmd vimrc FileType gitcommit setlocal softtabstop=2
+autocmd vimrc FileType mysql setlocal autoindent
 
 set listchars=nbsp:¬,tab:>-,trail:·,eol:$
 
