@@ -492,6 +492,10 @@ endfunction
 
 autocmd vimrc FileType rst call s:RstFileType()
 
+" SCSS
+" Recognize dashes as valid identifier characters
+autocmd vimrc FileType scss setlocal iskeyword+=-
+
 "== Colors ===================================================================
 
 " Switch syntax highlighting on, when the terminal has colors
