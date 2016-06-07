@@ -114,7 +114,7 @@ set hlsearch
 nohlsearch
 
 function! RedrawExtra()
-  checktime
+  if expand("%") !~# '^/dev/fd/\d\+$' | checktime | endif
   diffupdate
   if exists('b:sy') && b:sy.active
     call sy#start()
