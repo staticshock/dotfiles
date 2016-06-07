@@ -230,8 +230,9 @@ nnoremap <leader>r "0yiw:%s/\<<c-r>0\>//g<c-f>F/i
 
 "autocmd vimrc FileType json setlocal equalprg=python\ -mjson.tool
 autocmd vimrc FileType json setlocal equalprg=python\ -c\ '
-      \import\ sys,json;
-      \json.dump(json.load(sys.stdin),sys.stdout,indent=2)
+      \import\ sys,json,collections;
+      \data=json.load(sys.stdin,object_pairs_hook=collections.OrderedDict);
+      \json.dump(data,sys.stdout,indent=2,separators=(\",\",\":\ \"));
       \'
 
 "== Auto-completion ==========================================================
