@@ -235,6 +235,13 @@ autocmd vimrc FileType json setlocal equalprg=python\ -c\ '
       \json.dump(data,sys.stdout,indent=2,separators=(\",\",\":\ \"));
       \'
 
+autocmd vimrc FileType sql,mysql setlocal equalprg=python\ -c\ '
+      \import\ sys,sqlparse;
+      \input=sys.stdin.read();
+      \formatted=sqlparse.format(input,reindent=True,keyword_case=\"upper\");
+      \sys.stdout.write(formatted);
+      \'
+
 "== Auto-completion ==========================================================
 
 " <c-x> <c-k> dictionary completion
