@@ -17,11 +17,12 @@ if [[ -n $ZSH ]]; then
     unsetopt correct_all
 fi
 
-# PROMPT
-#   - Hostname
-#   - $PWD, abbreviated when possible (~/Desktop)
-#   - git HEAD, if in a git repository
-PROMPT="%{$fg[cyan]%}%m%{$reset_color%}:%{$fg_bold[cyan]%}%~\$(git_prompt_info)%{$reset_color%} "
+PROMPT="\
+%{$fg[cyan]%}%m%{$reset_color%}:\
+%{$fg_bold[cyan]%}%~\
+\$(git_prompt_info)%{$reset_color%}
+\$ "
+
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[white]%} <%{$fg[magenta]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[white]%}"
 # Do nothing if the branch is clean (no changes).
