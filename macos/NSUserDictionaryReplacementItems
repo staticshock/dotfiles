@@ -1,0 +1,107 @@
+(
+        {
+        on = 1;
+        replace = "5/6";
+        with = "\U215a";
+    },
+        {
+        on = 1;
+        replace = "1/6";
+        with = "\U2159";
+    },
+        {
+        on = 1;
+        replace = "4/5";
+        with = "\U2158";
+    },
+        {
+        on = 1;
+        replace = "7/8";
+        with = "\U215e";
+    },
+        {
+        on = 1;
+        replace = "5/8";
+        with = "\U215d";
+    },
+        {
+        on = 1;
+        replace = "3/8";
+        with = "\U215c";
+    },
+        {
+        on = 1;
+        replace = "3/5";
+        with = "\U2157";
+    },
+        {
+        on = 1;
+        replace = "2/5";
+        with = "\U2156";
+    },
+        {
+        on = 1;
+        replace = "2/3";
+        with = "\U2154";
+    },
+        {
+        on = 1;
+        replace = "1/3";
+        with = "\U2153";
+    },
+        {
+        on = 1;
+        replace = "1/5";
+        with = "\U2155";
+    },
+        {
+        on = 1;
+        replace = "3/4";
+        with = "\U00be";
+    },
+        {
+        on = 1;
+        replace = "1/8";
+        with = "\U215b";
+    },
+        {
+        on = 1;
+        replace = "1/4";
+        with = "\U00bc";
+    },
+        {
+        on = 1;
+        replace = "1/2";
+        with = "\U00bd";
+    },
+        {
+        on = 1;
+        replace = "<->";
+        with = "\U21c4";
+    },
+        {
+        on = 1;
+        replace = "<=";
+        with = "\U21e6";
+    },
+        {
+        on = 1;
+        replace = "=>";
+        with = "\U21e8";
+    },
+        {
+        on = 1;
+        replace = teh;
+        with = the;
+    },
+        {
+        on = 1;
+        replace = "<-";
+        with = "\U2190";
+    },
+        {
+        on = 1;
+        replace = "->";
+        with = "\U2192";
+    }
+)
