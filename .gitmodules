@@ -150,3 +150,6 @@
 	url = https://github.com/rking/ag.vim
 	ignore = dirty
 	branch = master
+[submodule ".vim/bundle/auto-pairs"]
+	path = .vim/bundle/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs
