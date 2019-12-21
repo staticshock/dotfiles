@@ -72,7 +72,7 @@
 	branch = master
 [submodule ".vim/bundle/ctrlp.vim"]
 	path = .vim/bundle/ctrlp.vim
-	url = https://github.com/kien/ctrlp.vim
+	url = https://github.com/ctrlpvim/ctrlp.vim
 	ignore = dirty
 	branch = master
 [submodule ".vim/bundle/bisectly"]
