@@ -177,6 +177,12 @@ nnoremap <silent> <leader># #
 xmap <silent> * <space>n
 xmap <silent> # <space>N
 
+" Always scan down on ^n and up on ^N
+"nnoremap <expr> <c-n> v:searchforward ? 'n' : 'N'
+"nnoremap <expr> <s-c-n> v:searchforward ? 'N' : 'n'
+"xnoremap <expr> <c-n> v:searchforward ? 'n' : 'N'
+"xnoremap <expr> <s-c-n> v:searchforward ? 'N' : 'n'
+
 " Search the file system using the_silver_searcher / ag.vim
 execute "nnoremap <leader>a :Ag "
 let g:ag_working_path_mode = "r"
