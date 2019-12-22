@@ -45,11 +45,6 @@
 	url = https://github.com/tpope/vim-surround.git
 	ignore = dirty
 	branch = master
-[submodule ".vim/bundle/vim-bitbake"]
-	path = .vim/bundle/vim-bitbake
-	url = https://github.com/kergoth/vim-bitbake
-	ignore = dirty
-	branch = master
 [submodule ".vim/bundle/vim-ldif"]
 	path = .vim/bundle/vim-ldif
 	url = https://github.com/vim-scripts/ldif.vim
