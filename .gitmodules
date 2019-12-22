@@ -80,11 +80,6 @@
 	url = https://github.com/roman/golden-ratio
 	ignore = dirty
 	branch = master
-[submodule ".vim/bundle/tern_for_vim"]
-	path = .vim/bundle/tern_for_vim
-	url = https://github.com/marijnh/tern_for_vim
-	ignore = dirty
-	branch = master
 [submodule ".vim/bundle/csv.vim"]
 	path = .vim/bundle/csv.vim
 	url = https://github.com/chrisbra/csv.vim
