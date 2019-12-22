@@ -40,7 +40,7 @@ set linebreak
 set nostartofline
 " Smart tab completion for vim commands
 set wildmenu wildmode=list:longest,full
-set wildignore+=*.pyc
+set wildignore+=*.pyc,tags
 " Case-insensitive file name completion
 if exists("&wildignorecase")
   set wildignorecase
