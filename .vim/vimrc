@@ -34,6 +34,8 @@ set number
 set showmatch
 " Don't wrap lines
 set nowrap
+" But if lines *are* wrapped, don't break in the middle of a word
+set linebreak
 " Don't move cursor to the start of the line on gg, G, and various friends
 set nostartofline
 " Smart tab completion for vim commands
