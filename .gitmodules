@@ -168,3 +168,6 @@
 [submodule ".vim/bundle/vim-javascript"]
 	path = .vim/bundle/vim-javascript
 	url = https://github.com/pangloss/vim-javascript
+[submodule ".vim/bundle/scss-syntax.vim"]
+	path = .vim/bundle/scss-syntax.vim
+	url = https://github.com/cakebaker/scss-syntax.vim
