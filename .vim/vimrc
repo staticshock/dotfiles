@@ -184,7 +184,10 @@ xmap <silent> # <space>N
 "xnoremap <expr> <s-c-n> v:searchforward ? 'N' : 'n'
 
 " Search the file system using the_silver_searcher / ag.vim
-execute "nnoremap <leader>a :Ag "
+nnoremap <expr> <leader>a ":Ag! -- '\\b\\b'<left><left><left>"
+" Search word under cursor
+nnoremap <expr> <leader>A ":Ag! -- '\\b'".expand('<cword>')."'\\b'<cr>"
+
 let g:ag_working_path_mode = "r"
 let g:ag_highlight = 1
 
