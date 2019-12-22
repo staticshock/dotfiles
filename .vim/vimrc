@@ -73,6 +73,10 @@ nnoremap <s-tab> <c-o>
 " Treat c_^x as i_^x (keyword completion)
 cnoremap <c-x> <c-f>i<c-x>
 
+" Treat e and E as ea and Ea
+nnoremap e ea
+nnoremap E Ea
+
 " Exit insert mode via Ctrl-C
 inoremap <c-c> <esc>
 
