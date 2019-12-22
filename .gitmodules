@@ -172,3 +172,6 @@
 [submodule ".vim/bundle/ultisnips"]
 	path = .vim/bundle/ultisnips
 	url = https://github.com/SirVer/ultisnips
+[submodule ".vim/bundle/vim-qf"]
+	path = .vim/bundle/vim-qf
+	url = https://github.com/romainl/vim-qf
