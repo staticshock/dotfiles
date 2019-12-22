@@ -190,6 +190,8 @@ nnoremap <expr> <leader>A ":Ag! -- '\\b'".expand('<cword>')."'\\b'<cr>"
 
 let g:ag_working_path_mode = "r"
 let g:ag_highlight = 1
+let g:ag_apply_lmappings = 0
+let g:ag_apply_qmappings = 0
 
 "== Whitespace ===============================================================
 
