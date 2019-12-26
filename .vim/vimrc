@@ -204,7 +204,7 @@ nnoremap <leader>___ <Plug>VimpleMRU
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " But prefer other indents for some specific file types
 autocmd vimrc FileType bitbake,gitconfig,cs setlocal noexpandtab
-autocmd vimrc FileType ruby,html,htmljinja,htmldjango,yaml,sql,mysql,json
+autocmd vimrc FileType ruby,html,htmljinja,htmldjango,yaml,sql,mysql,json,xml
       \ setlocal tabstop=2 softtabstop=2 shiftwidth=2
 autocmd vimrc FileType gitcommit setlocal softtabstop=2
 autocmd vimrc FileType mysql setlocal autoindent
