@@ -230,9 +230,27 @@ endfunction
 " Toggle list mode and look at whitespace settings
 nnoremap <silent> <leader>s :call ToggleListMode()<cr>
 
+" This can all go away once I find to a less bad window sizing plugin
+function! ResizeWindowOnFocus(allow_resizing)
+  let ignore_trigger = a:allow_resizing ? 0 : 1
+  " Re-add b:golden_ratio_resizing_ignored to new buffers on window changes
+  " (doesn't work for unnamed buffers)
+  silent augroup re_apply_resizing_config_to_all_buffers
+    autocmd!
+    if ignore_trigger
+      autocmd WinLeave * for bufobj in values(vimple#ls#new().data()) |
+            \   call setbufvar(bufobj.name, 'golden_ratio_resizing_ignored', 1) |
+            \ endfor
+    endif
+  augroup END
+  for bufobj in values(vimple#ls#new().data())
+    call setbufvar(bufobj.name, 'golden_ratio_resizing_ignored', ignore_trigger)
+  endfor
+endfunction
+
 " Unimpaired-style mappings to toggle mouse state
-nnoremap [om :set mouse=a ttymouse=xterm2<cr>
-nnoremap ]om :set mouse= ttymouse=<cr>
+nnoremap [om :set mouse=a ttymouse=xterm2 <bar> call ResizeWindowOnFocus(0)<cr>
+nnoremap ]om :set mouse= ttymouse= <bar> call ResizeWindowOnFocus(1)<cr>
 nnoremap com :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
 
 "== Formatting & refactoring =================================================
