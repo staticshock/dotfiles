@@ -103,5 +103,15 @@
         on = 1;
         replace = "->";
         with = "\U2192";
+    },
+        {
+        on = 1;
+        replace = "+-";
+        with = "\U00b1";
+    },
+        {
+        on = 1;
+        replace = "+/-";
+        with = "\U00b1";
     }
 )
