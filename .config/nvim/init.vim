@@ -23,12 +23,21 @@ nmap <silent> <leader><leader> :update<cr><c-l>
 " Use the system fzf executable instead of a separate version
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-" Show hidden buffers and MRU history with fzf
+
+function! s:ProjectRoot()
+	let path = finddir(".git", expand("%:p:h").";")
+	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+endfun
+
+" Fuzzy find hidden buffers, MRU history, and profile files (with fzf)
 nnoremap <leader>l :Buffers<cr>
 nnoremap <c-p> :History<cr>
+nnoremap <leader><c-p> :execute 'Files' . <sid>ProjectRoot()<cr>
+nnoremap <leader>: :Commands<cr>
+nnoremap <leader>t :Tags<cr>
 
-" Case insensitive search
-set ignorecase
+" Match lower-case search inputs in a case-insensitive way
+set ignorecase smartcase
 
 Plug 'tpope/vim-surround'
 Plug 'dahu/vim-fanfingtastic'
@@ -133,6 +142,29 @@ let g:signify_vcs_cmds = {
       \  'git': 'git diff master --no-color --no-ext-diff -U0 -- %f'
       \ }
 
+" Orig  +Delta = Result:
+" ''        +1 = 'HEAD~1'
+" 'HEAD'    +1 = 'HEAD~1'
+" 'HEAD~10' +1 = 'HEAD~11'
+" 'HEAD^2'  +1 = 'HEAD^2~1'
+" 'HEAD~1'  -1 = ''
+function! s:IncSignifyDiffScope(delta)
+  let options = g:signify_diffoptions
+  " TODO this isn't quite right; the default base is the index, not HEAD
+  let base = get(options, 'git', 'HEAD')
+  let parts = split(base, '\~\ze\d\+$')
+  let offset = str2nr(get(parts, 1)) + a:delta
+  let options.git = offset > 0 ? get(parts, 0, 'HEAD') . '~' . offset : ''
+  call sy#start()
+  echo 'let g:signify_diffoptions.git =' options.git
+endfunction
+
+function! s:DiffMappings()
+  nnoremap <silent> <up> :call <sid>IncSignifyDiffScope(-1)<cr>
+  nnoremap <silent> <down> :call <sid>IncSignifyDiffScope(+1)<cr>
+endfunction
+nnoremap <silent> <leader>kd :call <sid>DiffMappings()<cr>
+
 " Auto-close quotes, parens, etc
 Plug 'cohama/lexima.vim'
 
@@ -199,5 +231,103 @@ inoremap <c-c> <esc>
 
 " Persist undo history across sessions
 set undofile
+
+" Don't move cursor to the start of the line on gg, G, and various friends
+set nostartofline
+
+" Jump to the last known cursor position when opening a file, unless the
+" position is invalid, or we're inside an event handler (happens when dropping
+" a file on gvim), or when jumping to the first line, or when opening
+" gitcommit or gitrebase buffers.
+function! s:JumpToLastKnownCursorPosition()
+  if line("'\"") <= 1 | return | endif
+  if line("'\"") > line("$") | return | endif
+  " Ignore git commit messages and git rebase scripts.
+  if expand("%") =~# '\v(^|[\/])\.git[\/]' | return | endif
+  execute "normal! g`\"" |
+endfunction
+
+autocmd vimrc BufReadPost * call s:JumpToLastKnownCursorPosition()
+
+" Avoid some "hit enter" prompts and other messages
+set shortmess=astTI
+
+" By default, indent with 2 spaces and don't use softtabstop.
+set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+" Deviate from that norm for some file types.
+autocmd vimrc FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
+autocmd vimrc FileType gitconfig setlocal noexpandtab
+autocmd vimrc FileType mysql setlocal autoindent
+
+" Don't wrap lines.  But if lines *are* wrapped, don't break in the middle of
+" a word.
+set nowrap linebreak
+
+function! s:PythonFileType()
+  setlocal colorcolumn=80
+  nmap <leader>X <space>x
+  nnoremap <buffer> <leader>x :nmap <lt>leader>X :w \\| terminal! bpython -i ./%<lt>cr><c-f>4h
+endfunction
+
+autocmd vimrc FileType python call s:PythonFileType()
+
+" Auto-switch to insert in terminal buffers.
+autocmd vimrc TermOpen * startinsert
+
+Plug 'nvie/vim-flake8'
+
+" Auto-generate tags for the active buffer's repo. Hide the output from git.
+nmap <leader>T :execute "!cd ".<sid>ProjectRoot()." && "
+      \ "ctags -R --python-kinds=-i --exclude=.venv --exclude=node_modules && "
+      \ "gsed -i '/^tags$/d' .git/info/exclude && "
+      \ "echo tags >> .git/info/exclude"<cr><cr>
+
+set tags+=$HOME/src/newsela/*/tags
+set tags+=$HOME/src/*/tags
+
+" Replace the built-in python syntax highlighter with a 3rd party one,
+" primarily to parse f"{}" more intelligently.
+Plug 'vim-python/python-syntax'
+let g:python_highlight_all = 1
+
+" Vertically align text.
+Plug 'godlygeek/tabular'
+
+" Pretty-print JSON.
+autocmd vimrc FileType json setlocal equalprg=python\ -c\ '
+      \import\ sys,json,collections;
+      \data=json.load(sys.stdin,object_pairs_hook=collections.OrderedDict);
+      \json.dump(data,sys.stdout,indent=2,separators=(\",\",\":\ \"));
+      \'
+
+" Pretty-print SQL.
+autocmd vimrc FileType sql,mysql setlocal equalprg=python\ -c\ '
+      \import\ sys,sqlparse;
+      \input=sys.stdin.read();
+      \formatted=sqlparse.format(input,reindent=True,keyword_case=\"upper\");
+      \sys.stdout.write(formatted)
+      \'
+
+" Credit: tpope
+" Delete swapfiles for unmodified buffers. This means you won't get warnings
+" when you load the same file in multiple vim instances.
+autocmd vimrc CursorHold,BufWritePost,BufReadPost,BufLeave *
+      \ if !$VIMSWAP && isdirectory(expand("<amatch>:h")) |
+      \   let &swapfile = &modified |
+      \ endif
+
+" Bias zz just a little bit towards the bottom of the screen.
+nnoremap <expr> zz "zz".nvim_win_get_height(0)/8."\<lt>c-e>"
+
+Plug 'b4winckler/vim-angry'
+
+Plug 'tpope/vim-repeat'
+
+" Don't separate joined sentences by two spaces
+set nojoinspaces
+
+" SQL
+" Disable <c-c> insert-mode sql mappings
+let g:omni_sql_no_default_maps = 1
 
 call plug#end()
