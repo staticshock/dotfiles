@@ -20,21 +20,47 @@ let mapleader = ' '
 " Save current buffer
 nmap <silent> <leader><leader> :update<cr><c-l>
 
+" Create the 'vimrc' autocmd group, used below, and immediately clear it in
+" case this file is being sourced a second time
+augroup vimrc | execute 'autocmd!' | augroup END
+
 " Use the system fzf executable instead of a separate version
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 
-function! GetProjectRoot()
+function! GetProjectRoot(flags)
 	let path = finddir(".git", expand("%:p:h").";")
-	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+	let path = fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+  " e = escape: /foo bar -> /foo\ bar
+  let path = a:flags =~# 'e' ? fnameescape(path) : path
+  return path
 endfun
 
 " Fuzzy find hidden buffers, MRU history, and profile files (with fzf)
 nnoremap <leader>l :Buffers<cr>
 nnoremap <c-p> :History<cr>
-nnoremap <leader><c-p> :execute 'Files' . GetProjectRoot()<cr>
 nnoremap <leader>: :Commands<cr>
 nnoremap <leader>t :Tags<cr>
+
+" Switch from any fzf mode to :Files on the fly and transfer the search query.
+" Inspiration: https://github.com/junegunn/fzf.vim/issues/289#issuecomment-447369414
+function! s:FzfFallback()
+  " If possible, extract the search query from the previous fzf mode.
+  " :Files queries are ignored here because they use a different, harder to
+  " match prompt format.
+  let line = getline('.')
+  let query = substitute(line, '\v^(Hist|Buf|GitFiles|Locate)\> ?', '', '')
+  let query = query != line ? query : ''
+  close
+  sleep 100m
+  call fzf#vim#files(GetProjectRoot(''), {'options': ['-q', query]})
+endfunction
+
+function! s:FzfFileType()
+  tnoremap <buffer> <silent> <c-f> <c-\><c-n>:call <sid>FzfFallback()<cr>
+endfunction
+
+autocmd vimrc FileType fzf call s:FzfFileType()
 
 " Match lower-case search inputs in a case-insensitive way
 set ignorecase smartcase
@@ -112,14 +138,14 @@ Plug 'mileszs/ack.vim'
 let g:ackprg = 'ag --vimgrep --smart-case'
 
 " Search project for word under cursor (auto-submits)
-nnoremap <expr> <leader>A ":Ack! -- '\\b".<sid>EscapeAsPythonRegex(expand('<cword>'))."\\b' '".GetProjectRoot()."'<cr>"
+nnoremap <expr> <leader>A ":Ack! -- '\\b".<sid>EscapeAsPythonRegex(expand('<cword>'))."\\b' ".GetProjectRoot('e')."<cr>"
 " Search project for any expression (doesn't auto-submit)
-nnoremap <expr> <leader>a ":Ack! -- '".<sid>EscapeAsPythonRegex(input("Pattern: "))."' '".GetProjectRoot()."'<c-f>0WWl"
+nnoremap <expr> <leader>a ":Ack! -- '".<sid>EscapeAsPythonRegex(input("Pattern: "))."' ".GetProjectRoot('e')."<c-f>0WWl"
 
 " Search project for visual selection (auto-submits)
-xnoremap <expr> <leader>A ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" '".GetProjectRoot()."'<cr>"
+xnoremap <expr> <leader>A ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" ".GetProjectRoot('e')."<cr>"
 " Search project for visual selection (doesn't auto-submit)
-xnoremap <expr> <leader>a ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" '".GetProjectRoot()."'<c-f>0WWl"
+xnoremap <expr> <leader>a ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" ".GetProjectRoot('e')."<c-f>0WWl"
 
 function! s:GetVisualSelectionAsVimRegex()
   let [value, regtype] = GetVisualSelection()
@@ -190,10 +216,6 @@ nnoremap <silent> <leader>kd :call <sid>DiffMappings()<cr>
 " Auto-close quotes, parens, etc
 Plug 'cohama/lexima.vim'
 
-" Create the 'vimrc' autocmd group, used below, and immediately clear it in
-" case this file is being sourced a second time
-augroup vimrc | execute 'autocmd!' | augroup END
-
 function! s:VimFileType()
   setlocal tabstop=2 shiftwidth=2 expandtab
   " Show a line at 79
@@ -206,6 +228,7 @@ function! s:VimFileType()
         \ PlugInstall
         \ <cr>
   setlocal tags+=$HOME/.config/nvim/bundle/*/tags
+  setlocal tags+=/usr/local/opt/fzf/tags
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
@@ -300,7 +323,7 @@ autocmd vimrc TermOpen * startinsert
 Plug 'nvie/vim-flake8'
 
 " Auto-generate tags for the active buffer's repo. Hide the output from git.
-nmap <leader>T :execute "!cd ".GetProjectRoot()." && "
+nmap <leader>T :execute "!cd ".GetProjectRoot('e')." && "
       \ "ctags -R --python-kinds=-i --exclude=.venv --exclude=node_modules && "
       \ "gsed -i '/^tags$/d' .git/info/exclude && "
       \ "echo tags >> .git/info/exclude"<cr><cr>
