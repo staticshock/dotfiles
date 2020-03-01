@@ -24,7 +24,7 @@ nmap <silent> <leader><leader> :update<cr><c-l>
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 
-function! s:ProjectRoot()
+function! GetProjectRoot()
 	let path = finddir(".git", expand("%:p:h").";")
 	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
 endfun
@@ -32,7 +32,7 @@ endfun
 " Fuzzy find hidden buffers, MRU history, and profile files (with fzf)
 nnoremap <leader>l :Buffers<cr>
 nnoremap <c-p> :History<cr>
-nnoremap <leader><c-p> :execute 'Files' . <sid>ProjectRoot()<cr>
+nnoremap <leader><c-p> :execute 'Files' . GetProjectRoot()<cr>
 nnoremap <leader>: :Commands<cr>
 nnoremap <leader>t :Tags<cr>
 
@@ -84,14 +84,8 @@ nnoremap yom :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
 " Number every line
 set number
 
-" Search the file system using ag
-Plug 'mileszs/ack.vim'
-let g:ackprg = 'ag --vimgrep --smart-case'
-nnoremap <expr> <leader>a ":Ack! -- '\\b\\b'<left><left><left>"
-" Search word under cursor
-nnoremap <expr> <leader>A ":Ack! -- '\\b'".expand('<cword>')."'\\b'<cr>"
-
-function! s:GetVisualSelection()
+function! GetVisualSelection()
+  " Back up the 'a' register, clobber it, and then restore it.
   let orig_a = ['a', getreg('a'), getregtype('a')]
   normal! gv"ay
   let selection = [@a, getregtype('a')]
@@ -99,8 +93,32 @@ function! s:GetVisualSelection()
   return selection
 endfunction
 
-function! s:GetVisualSelectionAsRegex()
-  let [value, regtype] = <sid>GetVisualSelection()
+function! s:EscapeAsPythonRegex(value)
+  " Escape all the special characters for a python regex,
+  " minus \v (vertical tab) and \f (form feed), plus double quote.
+  let value = escape(a:value, "()[]{}?*+-|^$\\.&~# \"")
+  for pattern in ['\t', '\r', '\n']
+    let value = substitute(value, pattern, '\'.pattern, 'g')
+  endfor
+  return value
+endfunction
+
+" Search the file system using ag
+Plug 'mileszs/ack.vim'
+let g:ackprg = 'ag --vimgrep --smart-case'
+
+" Search project for word under cursor (auto-submits)
+nnoremap <expr> <leader>A ":Ack! -- '\\b".expand('<cword>')."\\b' '".GetProjectRoot()."'<cr>"
+" Search project for any expression (doesn't auto-submit)
+nnoremap <expr> <leader>a ":Ack! -- '".<sid>EscapeAsPythonRegex(input("Pattern: "))."' '".GetProjectRoot()."'<c-f>0WWl"
+
+" Search project for visual selection (auto-submits)
+xnoremap <expr> <leader>A ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" '".GetProjectRoot()."'<cr>"
+" Search project for visual selection (doesn't auto-submit)
+xnoremap <expr> <leader>a ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" '".GetProjectRoot()."'<c-f>0WWl"
+
+function! s:GetVisualSelectionAsVimRegex()
+  let [value, regtype] = GetVisualSelection()
   let [p_start, p_linesep, p_end] =
         \ regtype =~ '\d\+' ? ['\V', '\.\*\n\.\*', ''] :
         \ regtype ==# 'V'   ? ['\V\^', '\n', '\$'] :
@@ -115,16 +133,16 @@ function! DoSearch(expr, flags)
 endfunction
 
 " Search for line under cursor
-nnoremap <silent> <leader>n :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '') <bar> let v:hlsearch=&hlsearch<cr>
-nnoremap <silent> <leader>N :<c-u>call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> <leader>n :call DoSearch('\V\^'.escape(getline('.'), '\').'\$', '') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> <leader>N :call DoSearch('\V\^'.escape(getline('.'), '\').'\$', 'r') <bar> let v:hlsearch=&hlsearch<cr>
 
 " Search for visual selection
-xnoremap <silent> <leader>n :<c-u>call DoSearch(<sid>GetVisualSelectionAsRegex(), '') <bar> let v:hlsearch=&hlsearch<cr>
-xnoremap <silent> <leader>N :<c-u>call DoSearch(<sid>GetVisualSelectionAsRegex(), 'r') <bar> let v:hlsearch=&hlsearch<cr>
+xnoremap <silent> <leader>n :<c-u>call DoSearch(<sid>GetVisualSelectionAsVimRegex(), '') <bar> let v:hlsearch=&hlsearch<cr>
+xnoremap <silent> <leader>N :<c-u>call DoSearch(<sid>GetVisualSelectionAsVimRegex(), 'r') <bar> let v:hlsearch=&hlsearch<cr>
 
 " Search for word under cursor (case sensitive)
-nnoremap <silent> * :<c-u>silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', '') <bar> let v:hlsearch=&hlsearch<cr>
-nnoremap <silent> # :<c-u>silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', 'r') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> * :silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', '') <bar> let v:hlsearch=&hlsearch<cr>
+nnoremap <silent> # :silent call DoSearch('\V\C\<'.escape(expand('<cword>'), '\').'\>', 'r') <bar> let v:hlsearch=&hlsearch<cr>
 
 " Search for word under cursor (case insensitive; follows 'ignorecase')
 nnoremap <silent> <leader>* *
@@ -277,7 +295,7 @@ autocmd vimrc TermOpen * startinsert
 Plug 'nvie/vim-flake8'
 
 " Auto-generate tags for the active buffer's repo. Hide the output from git.
-nmap <leader>T :execute "!cd ".<sid>ProjectRoot()." && "
+nmap <leader>T :execute "!cd ".GetProjectRoot()." && "
       \ "ctags -R --python-kinds=-i --exclude=.venv --exclude=node_modules && "
       \ "gsed -i '/^tags$/d' .git/info/exclude && "
       \ "echo tags >> .git/info/exclude"<cr><cr>
@@ -329,5 +347,15 @@ set nojoinspaces
 " SQL
 " Disable <c-c> insert-mode sql mappings
 let g:omni_sql_no_default_maps = 1
+
+" Case-insensitive file name completion
+set wildignorecase
+
+" Enables Gblame
+Plug 'tpope/vim-fugitive'
+" Adds github handler for Gbrowse
+Plug 'tpope/vim-rhubarb'
+
+Plug 'SirVer/ultisnips'
 
 call plug#end()
