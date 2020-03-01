@@ -94,9 +94,13 @@ function! GetVisualSelection()
 endfunction
 
 function! s:EscapeAsPythonRegex(value)
-  " Escape all the special characters for a python regex,
-  " minus \v (vertical tab) and \f (form feed), plus double quote.
-  let value = escape(a:value, "()[]{}?*+-|^$\\.&~# \"")
+  " Escape most of the special characters for a python regex...
+  " - Minus \v (vertical tab) and \f (form feed), because they're different
+  "   enough and probably won't come up.
+  " - Plus ", to push the result through an intermediate parser.
+  " - Plus %, becauuse Ack seems to interpret # and % as vim registers instead
+  "   of literals.
+  let value = escape(a:value, "()[]{}?*+-|^$\\.&~# \"%")
   for pattern in ['\t', '\r', '\n']
     let value = substitute(value, pattern, '\'.pattern, 'g')
   endfor
@@ -108,7 +112,7 @@ Plug 'mileszs/ack.vim'
 let g:ackprg = 'ag --vimgrep --smart-case'
 
 " Search project for word under cursor (auto-submits)
-nnoremap <expr> <leader>A ":Ack! -- '\\b".expand('<cword>')."\\b' '".GetProjectRoot()."'<cr>"
+nnoremap <expr> <leader>A ":Ack! -- '\\b".<sid>EscapeAsPythonRegex(expand('<cword>'))."\\b' '".GetProjectRoot()."'<cr>"
 " Search project for any expression (doesn't auto-submit)
 nnoremap <expr> <leader>a ":Ack! -- '".<sid>EscapeAsPythonRegex(input("Pattern: "))."' '".GetProjectRoot()."'<c-f>0WWl"
 
@@ -201,6 +205,7 @@ function! s:VimFileType()
         \ execute 'setf '.&ft <bar>
         \ PlugInstall
         \ <cr>
+  setlocal tags+=$HOME/.config/nvim/bundle/*/tags
 endfunction
 
 autocmd vimrc FileType vim call s:VimFileType()
@@ -277,8 +282,8 @@ autocmd vimrc FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
 autocmd vimrc FileType gitconfig setlocal noexpandtab
 autocmd vimrc FileType mysql setlocal autoindent
 
-" Don't wrap lines.  But if lines *are* wrapped, don't break in the middle of
-" a word.
+" Don't wrap lines. If lines *are* wrapped, don't break in the middle of a
+" word.
 set nowrap linebreak
 
 function! s:PythonFileType()
@@ -357,5 +362,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
 Plug 'SirVer/ultisnips'
+
+" Make it easier to leave nvim terminal's insert mode
+tnoremap <esc> <c-\><c-n>
 
 call plug#end()
