@@ -28,19 +28,19 @@ augroup vimrc | execute 'autocmd!' | augroup END
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 
-function! GetProjectRoot(flags)
-	let path = finddir(".git", expand("%:p:h").";")
-	let path = fnamemodify(substitute(path, ".git", "", ""), ":p:h")
-  " e = escape: /foo bar -> /foo\ bar
-  let path = a:flags =~# 'e' ? fnameescape(path) : path
-  return path
-endfun
-
 " Fuzzy find hidden buffers, MRU history, and profile files (with fzf)
 nnoremap <leader>l :Buffers<cr>
 nnoremap <c-p> :History<cr>
 nnoremap <leader>: :Commands<cr>
 nnoremap <leader>t :Tags<cr>
+
+function! GetProjectRoot(flags)
+  let path = finddir(".git", expand("%:p:h").";")
+  let path = fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+  " e = escape: /foo bar -> /foo\ bar
+  let path = a:flags =~# 'e' ? fnameescape(path) : path
+  return path
+endfun
 
 " Switch from any fzf mode to :Files on the fly and transfer the search query.
 " Inspiration: https://github.com/junegunn/fzf.vim/issues/289#issuecomment-447369414

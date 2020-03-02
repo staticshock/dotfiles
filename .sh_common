@@ -17,7 +17,14 @@ alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
 alias bp=bpython
 
-export EDITOR=vim
+# Yeah...
+export EDITOR=nvim
+alias vi=nvim
+alias vim=nvim
+alias voim=nvim
+alias viom=nvim
+
+export FZF_DEFAULT_COMMAND='ag -l'
 
 export LESS="--RAW-CONTROL-CHARS --jump-target=10"
 
