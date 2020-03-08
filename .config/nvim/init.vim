@@ -311,8 +311,11 @@ set nowrap linebreak
 
 function! s:PythonFileType()
   setlocal colorcolumn=80
+  " Save and run current buffer.
   nmap <leader>X <space>x
   nnoremap <buffer> <leader>x :nmap <lt>leader>X :w \\| terminal! bpython -i ./%<lt>cr><c-f>4h
+  " Add a pudb breakpoint before the line with the cursor on it.
+  nnoremap <silent> <leader>b :call <sid>Preserve("normal Oimport pudb; pu.db")<cr>:update<cr><c-l>
 endfunction
 
 autocmd vimrc FileType python call s:PythonFileType()
