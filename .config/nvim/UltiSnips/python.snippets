@@ -15,6 +15,13 @@ snippet pdb
 import pudb; pu.db
 endsnippet
 
+# Debug a Django admin form submission.
+snippet apdb
+def _changeform_view(self, *args, **kwargs):
+	import pudb; pu.db
+	return super()._changeform_view(*args, **kwargs)
+endsnippet
+
 snippet cmd
 import logging
 
