@@ -139,11 +139,3 @@ update :
 .PHONY : update-submodules
 update-submodules :
 	@git submodule foreach git pull origin master
-
-.PHONY : save-text-substitutions
-save-text-substitutions:
-	defaults read -g NSUserDictionaryReplacementItems | sed 's/\\\\U/\\U/' > macos/NSUserDictionaryReplacementItems
-
-.PHONY : load-text-substitutions
-load-text-substitutions:
-	defaults write -g NSUserDictionaryReplacementItems "$$(cat macos/NSUserDictionaryReplacementItems)"
