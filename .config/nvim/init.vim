@@ -215,6 +215,10 @@ nnoremap <silent> <leader>kd :call <sid>DiffMappings()<cr>
 
 " Auto-close quotes, parens, etc
 Plug 'cohama/lexima.vim'
+" Lexima throws an error if you hit enter from here: [|], {|}, (|).
+" https://github.com/cohama/lexima.vim/issues/97
+" Disable newline rules until that's fixed.
+let g:lexima_enable_newline_rules = 0
 
 function! s:VimFileType()
   setlocal tabstop=2 shiftwidth=2 expandtab
@@ -391,5 +395,14 @@ Plug 'SirVer/ultisnips'
 
 " Make it easier to leave nvim terminal's insert mode
 tnoremap <esc> <c-\><c-n>
+
+" Insert comma after every 3 digits for number under cursor.
+nmap <leader>, ciw<c-r>=substitute(@", '\v(\d)((\d\d\d)+\d@!)@=', '\1,', 'g')<cr><esc>
+
+Plug 'kchmck/vim-coffee-script'
+
+" Load $PWD/.nvimrc, but disallow autocmd, shell, and write commands.
+set exrc secure
+
 
 call plug#end()
