@@ -423,4 +423,6 @@ set exrc secure
 " Splitting the window places new window below or to the right.
 set splitbelow splitright
 
+Plug 'keith/swift.vim'
+
 call plug#end()
