@@ -369,8 +369,24 @@ autocmd vimrc CursorHold,BufWritePost,BufReadPost,BufLeave *
       \   let &swapfile = &modified |
       \ endif
 
+function! s:GetExpressionToCenterViewport()
+  let expression = "zz"
+  " zz doesn't center the cursor when the cursor is at or near the very top of
+  " the buffer. In that situation, the 'deficit' is the number of lines by
+  " which it falls short.
+  let zz_deficit = max([0, winheight(0)/2 - line('.')])
+  " Instead of landing smack in the middle of the screen, let's put 3/8ths of
+  " the viewport above the cursor and 5/8ths below.
+  let bias_lines = max([0, winheight(0)/8 - zz_deficit])
+  " Do this conditionally, because 0<c-e> is secretly the same as 1<c-e>
+  if bias_lines > 0
+    let expression = expression.bias_lines."\<c-e>"
+  endif
+  return expression
+endfunction
+
 " Bias zz just a little bit towards the bottom of the screen.
-nnoremap <expr> zz "zz".nvim_win_get_height(0)/8."\<lt>c-e>"
+nnoremap <expr> zz <sid>GetExpressionToCenterViewport()
 
 Plug 'b4winckler/vim-angry'
 
