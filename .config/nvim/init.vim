@@ -425,4 +425,6 @@ set splitbelow splitright
 
 Plug 'keith/swift.vim'
 
+Plug 'tpope/vim-abolish'
+
 call plug#end()
