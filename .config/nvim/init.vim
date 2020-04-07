@@ -427,4 +427,11 @@ Plug 'keith/swift.vim'
 
 Plug 'tpope/vim-abolish'
 
+" Prevent F12 from issuing a literal <F12> sequence in insert + command mode.
+" I literally never want <F12> inserted into a file, but the macbook's
+" touchbar very helpfully inserts this sequence almost every time that I try
+" to use the delete key.
+inoremap <f12> <nop>
+cnoremap <f12> <nop>
+
 call plug#end()
