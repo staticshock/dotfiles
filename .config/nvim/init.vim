@@ -434,4 +434,13 @@ Plug 'tpope/vim-abolish'
 inoremap <f12> <nop>
 cnoremap <f12> <nop>
 
+" Pretty-print HTML.
+autocmd vimrc FileType html setlocal equalprg=tidy
+      \\ -indent\ -wrap\ 0
+      \\ -quiet\ --show-errors\ 0
+      \\ --show-body-only\ auto
+      \\ --tidy-mark\ no
+      \\ -
+      \\ \|\|\ true
+
 call plug#end()
