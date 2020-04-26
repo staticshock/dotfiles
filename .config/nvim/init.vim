@@ -34,7 +34,7 @@ nnoremap <c-p> :History<cr>
 nnoremap <leader>: :Commands<cr>
 nnoremap <leader>t :Tags<cr>
 
-function! GetProjectRoot(flags)
+function GetProjectRoot(flags)
   let path = finddir(".git", expand("%:p:h").";")
   let path = fnamemodify(substitute(path, ".git", "", ""), ":p:h")
   " e = escape: /foo bar -> /foo\ bar
@@ -44,7 +44,7 @@ endfun
 
 " Switch from any fzf mode to :Files on the fly and transfer the search query.
 " Inspiration: https://github.com/junegunn/fzf.vim/issues/289#issuecomment-447369414
-function! s:FzfFallback()
+function s:FzfFallback()
   " If possible, extract the search query from the previous fzf mode.
   " :Files queries are ignored here because they use a different, harder to
   " match prompt format.
@@ -56,7 +56,7 @@ function! s:FzfFallback()
   call fzf#vim#files(GetProjectRoot(''), {'options': ['-q', query]})
 endfunction
 
-function! s:FzfFileType()
+function s:FzfFileType()
   tnoremap <buffer> <silent> <c-f> <c-\><c-n>:call <sid>FzfFallback()<cr>
 endfunction
 
@@ -68,7 +68,7 @@ set ignorecase smartcase
 Plug 'tpope/vim-surround'
 Plug 'dahu/vim-fanfingtastic'
 
-function! s:RedrawExtra()
+function s:RedrawExtra()
   if expand("%") !~# '^/dev/fd/\d\+$' | checktime | endif
   diffupdate
   if exists('b:sy') && b:sy.active
@@ -86,7 +86,7 @@ nnoremap <silent> <c-l> :<c-u>nohlsearch \| call <sid>RedrawExtra()<cr><c-l>
 nnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
 xnoremap <silent> QQ :<c-u>update <bar> bdel<cr>
 
-function! s:ViewportMappings()
+function s:ViewportMappings()
   let [ystep, xstep] = [5, 10]
   " Move viewport
   execute 'nnoremap <left> '.xstep.'zh'
@@ -110,7 +110,7 @@ nnoremap yom :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
 " Number every line
 set number
 
-function! GetVisualSelection()
+function GetVisualSelection()
   " Back up the 'a' register, clobber it, and then restore it.
   let orig_a = ['a', getreg('a'), getregtype('a')]
   normal! gv"ay
@@ -119,7 +119,7 @@ function! GetVisualSelection()
   return selection
 endfunction
 
-function! s:EscapeAsPythonRegex(value)
+function s:EscapeAsPythonRegex(value)
   " Escape most of the special characters for a python regex...
   " - Minus \v (vertical tab) and \f (form feed), because they're different
   "   enough and probably won't come up.
@@ -147,7 +147,7 @@ xnoremap <expr> <leader>A ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVis
 " Search project for visual selection (doesn't auto-submit)
 xnoremap <expr> <leader>a ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" ".GetProjectRoot('e')."<c-f>0WWl"
 
-function! s:GetVisualSelectionAsVimRegex()
+function s:GetVisualSelectionAsVimRegex()
   let [value, regtype] = GetVisualSelection()
   let [p_start, p_linesep, p_end] =
         \ regtype =~ '\d\+' ? ['\V', '\.\*\n\.\*', ''] :
@@ -156,7 +156,7 @@ function! s:GetVisualSelectionAsVimRegex()
   return p_start.join(split(escape(value, '\'), "\n"), p_linesep).p_end
 endfunction
 
-function! DoSearch(expr, flags)
+function DoSearch(expr, flags)
   let @/ = a:expr
   call histadd("/", @/)
   execute 'normal! '.(a:flags =~# 'r' ? 'N' : 'n')
@@ -196,7 +196,7 @@ let g:signify_vcs_cmds = {
 " 'HEAD~10' +1 = 'HEAD~11'
 " 'HEAD^2'  +1 = 'HEAD^2~1'
 " 'HEAD~1'  -1 = ''
-function! s:IncSignifyDiffScope(delta)
+function s:IncSignifyDiffScope(delta)
   let options = g:signify_diffoptions
   " TODO this isn't quite right; the default base is the index, not HEAD
   let base = get(options, 'git', 'HEAD')
@@ -207,7 +207,7 @@ function! s:IncSignifyDiffScope(delta)
   echo 'let g:signify_diffoptions.git =' options.git
 endfunction
 
-function! s:DiffMappings()
+function s:DiffMappings()
   nnoremap <silent> <up> :call <sid>IncSignifyDiffScope(-1)<cr>
   nnoremap <silent> <down> :call <sid>IncSignifyDiffScope(+1)<cr>
 endfunction
@@ -220,7 +220,7 @@ Plug 'cohama/lexima.vim'
 " Disable newline rules until that's fixed.
 let g:lexima_enable_newline_rules = 0
 
-function! s:VimFileType()
+function s:VimFileType()
   setlocal tabstop=2 shiftwidth=2 expandtab
   " Show a line at 79
   setlocal colorcolumn=79
@@ -240,7 +240,7 @@ autocmd vimrc FileType vim call s:VimFileType()
 set listchars=nbsp:¬,tab:>-,trail:·,eol:$
 
 " Toggle list mode
-function! s:ToggleListMode()
+function s:ToggleListMode()
   if !&list
     let whitespace_settings =
           \ 'filetype=' . &ft .
@@ -259,7 +259,7 @@ endfunction
 nnoremap <silent> <leader>s :call <sid>ToggleListMode()<cr>
 
 " Credit: http://vimcasts.org/episodes/tidying-whitespace/
-function! s:Preserve(command)
+function s:Preserve(command)
   " Save last search and cursor position
   let search=@/
   let [line, column] = [line("."), col(".")]
@@ -289,7 +289,7 @@ set nostartofline
 " position is invalid, or we're inside an event handler (happens when dropping
 " a file on gvim), or when jumping to the first line, or when opening
 " gitcommit or gitrebase buffers.
-function! s:JumpToLastKnownCursorPosition()
+function s:JumpToLastKnownCursorPosition()
   if line("'\"") <= 1 | return | endif
   if line("'\"") > line("$") | return | endif
   " Ignore git commit messages and git rebase scripts.
@@ -313,7 +313,7 @@ autocmd vimrc FileType mysql setlocal autoindent
 " word.
 set nowrap linebreak
 
-function! s:PythonFileType()
+function s:PythonFileType()
   setlocal colorcolumn=80
   " Save and run current buffer.
   nmap <leader>X <space>x
@@ -369,7 +369,7 @@ autocmd vimrc CursorHold,BufWritePost,BufReadPost,BufLeave *
       \   let &swapfile = &modified |
       \ endif
 
-function! s:GetExpressionToCenterViewport()
+function s:GetExpressionToCenterViewport()
   let expression = "zz"
   " zz doesn't center the cursor when the cursor is at or near the very top of
   " the buffer. In that situation, the 'deficit' is the number of lines by
