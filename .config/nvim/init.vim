@@ -446,4 +446,8 @@ autocmd vimrc FileType html setlocal equalprg=tidy
 " Improve default python indentation for multi-line [], {}, () expressions.
 Plug 'Vimjas/vim-python-pep8-indent'
 
+" Improve quickfix usability (:Keep, <Left>/<Right>)
+Plug 'romainl/vim-qf'
+let g:qf_shorten_path = 0
+
 call plug#end()
