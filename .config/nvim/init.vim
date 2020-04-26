@@ -331,7 +331,7 @@ Plug 'nvie/vim-flake8'
 
 " Auto-generate tags for the active buffer's repo. Hide the output from git.
 nmap <leader>T :execute "!cd ".GetProjectRoot('e')." && "
-      \ "ctags -R --python-kinds=-i --exclude=.venv --exclude=node_modules && "
+      \ "ctags -R . && "
       \ "gsed -i '/^tags$/d' .git/info/exclude && "
       \ "echo tags >> .git/info/exclude"<cr><cr>
 
