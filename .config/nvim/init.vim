@@ -314,12 +314,13 @@ autocmd vimrc FileType mysql setlocal autoindent
 set nowrap linebreak
 
 function s:PythonFileType()
-  setlocal colorcolumn=80
+  setlocal textwidth=88 colorcolumn=89 wrap
+  nmap <buffer> <silent> <leader><leader> :update %<cr><c-l>
   " Save and run current buffer.
   nmap <leader>X <space>x
   nnoremap <buffer> <leader>x :nmap <lt>leader>X :w \\| sp +terminal!\ bpython\ -i\ ./%<lt>cr><c-f>4h
-  " Add a pudb breakpoint before the line with the cursor on it.
-  nnoremap <silent> <leader>b :call <sid>Preserve("normal Oimport pudb; pu.db")<cr>:update<cr><c-l>
+  " Add a breakpoint before the line with the cursor on it.
+  nnoremap <silent> <leader>b :call <sid>Preserve("normal Obreakpoint()")<cr>:update<cr><c-l>
 endfunction
 
 autocmd vimrc FileType python call s:PythonFileType()
