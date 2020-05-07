@@ -451,4 +451,6 @@ Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'romainl/vim-qf'
 let g:qf_shorten_path = 0
 
+Plug 'cespare/vim-toml'
+
 call plug#end()
