@@ -453,4 +453,7 @@ let g:qf_shorten_path = 0
 
 Plug 'cespare/vim-toml'
 
+" Use more context for syntax highlighting Makefiles.
+autocmd FileType make syn sync minlines=500
+
 call plug#end()
