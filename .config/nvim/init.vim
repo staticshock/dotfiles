@@ -462,4 +462,26 @@ Plug 'cespare/vim-toml'
 " Use more context for syntax highlighting Makefiles.
 autocmd FileType make syn sync minlines=500
 
+function s:GitRebaseFileType()
+  " Override Neovim's terrible built-in `K` behavior, which is `!git show`.
+  " This *has* to be run after the built-in filetype handlers in order to win.
+  setlocal keywordprg=:Git\ show
+  " Add some highly experimental mappings that will certainly backfire any
+  " minute now.
+  nmap <buffer> r :Reword<cr>
+  nmap <buffer> e :Edit<cr>
+  nmap <buffer> f :Fixup<cr>
+  nmap <buffer> s :Squash<cr>
+endfunction
+
+" Use BufWinEnter instead of FileType to configure gitrebase buffers after the
+" relevant built-in handlers (ftplugin/git.vim and ftplugin/gitrebase.vim)
+" have already run. Using FileType would have let them trample &keywordprg.
+autocmd vimrc BufWinEnter *
+      \ if &filetype == 'gitrebase' |
+      \   call s:GitRebaseFileType() |
+      \ elseif &filetype == 'fugitiveblame' |
+      \   setlocal keywordprg=:Git\ show |
+      \ endif
+
 call plug#end()
