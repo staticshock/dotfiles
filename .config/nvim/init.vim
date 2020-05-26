@@ -133,6 +133,12 @@ function s:EscapeAsPythonRegex(value)
   return value
 endfunction
 
+function s:EscapeShellArgument(value)
+  " Replace single quotes with '"'"', assuming the final value will be wrapped
+  " in single quotes by the caller. This is a bit ugly.
+  return substitute(a:value, "'", "'\"'\"'", 'g')
+endfunction
+
 " Search the file system using ag
 Plug 'mileszs/ack.vim'
 let g:ackprg = 'ag --vimgrep --smart-case'
@@ -140,7 +146,7 @@ let g:ackprg = 'ag --vimgrep --smart-case'
 " Search project for word under cursor (auto-submits)
 nnoremap <expr> <leader>A ":Ack! -- '\\b".<sid>EscapeAsPythonRegex(expand('<cword>'))."\\b' ".GetProjectRoot('e')."<cr>"
 " Search project for any expression (doesn't auto-submit)
-nnoremap <expr> <leader>a ":Ack! -- '".<sid>EscapeAsPythonRegex(input("Pattern: "))."' ".GetProjectRoot('e')."<c-f>0WWl"
+nnoremap <expr> <leader>a ":Ack! --literal -- '".<sid>EscapeShellArgument(input("Pattern: "))."' ".GetProjectRoot('e')."<c-f>0WWl"
 
 " Search project for visual selection (auto-submits)
 xnoremap <expr> <leader>A ":<c-u>Ack! -- \"<c-r>=<sid>EscapeAsPythonRegex(GetVisualSelection()[0])<cr>\" ".GetProjectRoot('e')."<cr>"
