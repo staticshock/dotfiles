@@ -265,7 +265,7 @@ endfunction
 nnoremap <silent> <leader>s :call <sid>ToggleListMode()<cr>
 
 " Credit: http://vimcasts.org/episodes/tidying-whitespace/
-function s:Preserve(command)
+function Preserve(command)
   " Save last search and cursor position
   let search=@/
   let [line, column] = [line("."), col(".")]
@@ -277,10 +277,10 @@ function s:Preserve(command)
 endfunction
 
 " Strip trailing whitespace
-nnoremap <leader>S :call <sid>Preserve("%s/\\s\\+$//e")<cr>
+nnoremap <leader>S :call Preserve("%s/\\s\\+$//e")<cr>
 
 " Replace unicode quotes with plain ASCII quotes
-nnoremap <leader>Q :call <sid>Preserve("%s/[‘’]/'/g \| %s/[“”]/\"/g")<cr>
+nnoremap <leader>Q :call Preserve("%s/[‘’]/'/g \| %s/[“”]/\"/g")<cr>
 
 " Exit insert mode via Ctrl-C
 inoremap <c-c> <esc>
@@ -326,7 +326,7 @@ function s:PythonFileType()
   nmap <leader>X <space>x
   nnoremap <buffer> <leader>x :nmap <lt>leader>X :w \\| sp +terminal!\ bpython\ -i\ ./%<lt>cr><c-f>4h
   " Add a breakpoint before the line with the cursor on it.
-  nnoremap <silent> <leader>b :call <sid>Preserve("normal Obreakpoint()")<cr>:update<cr><c-l>
+  nnoremap <silent> <leader>b :call Preserve("normal Obreakpoint()")<cr>:update<cr><c-l>
 endfunction
 
 autocmd vimrc FileType python call s:PythonFileType()
