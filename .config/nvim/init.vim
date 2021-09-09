@@ -320,6 +320,8 @@ autocmd vimrc FileType mysql setlocal autoindent
 set nowrap linebreak
 
 function s:PythonFileType()
+  " Use black as the default formatter.
+  setlocal equalprg=black\ -q\ -
   setlocal textwidth=88 colorcolumn=89 wrap
   nmap <buffer> <silent> <leader><leader> :update %<cr><c-l>
   " Save and run current buffer.
