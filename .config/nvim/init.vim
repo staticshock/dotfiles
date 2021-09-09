@@ -1,6 +1,6 @@
 " Things below appear in the order in which they were introduced, which is
 " basically the order in which I missed them when I moved from vim to neovim.
-" That means that almost nothing is logically grouped yet. It alos means that
+" That means that almost nothing is logically grouped yet. It also means that
 " the lower you go, the more experimental it gets.
 
 call plug#begin('~/.config/nvim/bundle')
@@ -124,7 +124,7 @@ function s:EscapeAsPythonRegex(value)
   " - Minus \v (vertical tab) and \f (form feed), because they're different
   "   enough and probably won't come up.
   " - Plus ", to push the result through an intermediate parser.
-  " - Plus %, becauuse Ack seems to interpret # and % as vim registers instead
+  " - Plus %, because Ack seems to interpret # and % as vim registers instead
   "   of literals.
   let value = escape(a:value, "()[]{}?*+-|^$\\.&~# \"%")
   for pattern in ['\t', '\r', '\n']
