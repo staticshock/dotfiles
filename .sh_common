@@ -43,6 +43,13 @@ alias crlf="GREP_COLOR='44' grep -IU $'\r\n'"
 # decent-looking pygmentize styles: fruity, monokai, native
 alias ccat='pygmentize -f terminal256 -O style=native'
 
+# If you ever share a program that has a cat statement in it, someone will
+# invariably tell you that you can avoid invoking cat by piping your input file
+# directly into the next part of the pipeline. However, cat can still be nice
+# because it lets your data flow from left to right. useless_cat is just my way
+# of saying, "don't tell me that my cat is useless, I love my cat."
+alias useless_cat=cat
+
 # Text processing / formatting
 alias cuts="cut -d ' '"
 alias beautifyjs="uglifyjs -b --overwrite"
