@@ -47,7 +47,7 @@ alias ccat='pygmentize -f terminal256 -O style=native'
 # invariably tell you that you can avoid invoking cat by piping your input file
 # directly into the next part of the pipeline. However, cat can still be nice
 # because it lets your data flow from left to right. useless_cat is just my way
-# of saying, "don't tell me that my cat is useless, I love my cat."
+# of saying, "I already know my cat is useless. I still love it."
 alias useless_cat=cat
 
 # Text processing / formatting
