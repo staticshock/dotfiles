@@ -17,6 +17,9 @@ if [[ -n $ZSH ]]; then
     unsetopt correct_all
 fi
 
+HISTSIZE=10000000
+SAVEHIST=10000000
+
 PROMPT="\
 %{$fg[cyan]%}%m%{$reset_color%}:\
 %{$fg_bold[cyan]%}%~\
