@@ -328,7 +328,8 @@ function s:PythonFileType()
   nmap <leader>X <space>x
   nnoremap <buffer> <leader>x :nmap <lt>leader>X :w \\| sp +terminal!\ bpython\ -i\ ./%<lt>cr><c-f>4h
   " Add a breakpoint before the line with the cursor on it.
-  nnoremap <silent> <leader>b :call Preserve("normal Obreakpoint()")<cr>:update<cr><c-l>
+  nnoremap <silent> <leader>b :call Preserve("normal obreakpoint()")<cr>:update<cr><c-l>
+  nnoremap <silent> <leader>B :call Preserve("normal Obreakpoint()")<cr>:update<cr><c-l>
 endfunction
 
 autocmd vimrc FileType python call s:PythonFileType()
