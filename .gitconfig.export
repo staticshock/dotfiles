@@ -12,8 +12,13 @@
 	hash = show --no-patch --format=%H
 	mod = submodule
 	note = notes
+	recent = !git -c color.ui=always reflog --pretty=reflog | grep checkout: | head -n20
+	destroy = "!f() { ref=$(git symbolic-ref HEAD) && git checkout - && git branch -D \"${ref#refs/heads/}\"; }; f"
 [diff]
 	tool = vimdiff
+	mnemonicprefix = true
+[pretty]
+	reflog=%C(auto)%h %C(green)(committed %cr)%C(reset) %gs
 [difftool]
 	prompt = false
 [color]
@@ -29,5 +34,18 @@
 	tag = auto
 [log]
 	mailmap = true
+[merge]
+	tool = diffconflicts
+	conflictStyle = diff3
+[mergetool "diffconflicts"]
+	cmd = diffconflicts vim $BASE $LOCAL $REMOTE $MERGED
+	trustExitCode = true
+	keepBackup = false
 [pull]
 	rebase = true
+[push]
+	default = upstream
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
