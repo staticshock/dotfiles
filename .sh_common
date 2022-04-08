@@ -83,7 +83,7 @@ sedtest() {
 alias svn-clean='svn status | grep ^\? | cut -c9- | xargs -I {} -d \\n rm -r {}'
 
 # Git aliases
-alias gst='git status -s'
+alias gst='git status -s; git stash list'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gs='git show'
