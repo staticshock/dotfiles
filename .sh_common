@@ -43,6 +43,9 @@ alias crlf="GREP_COLOR='44' grep -IU $'\r\n'"
 # decent-looking pygmentize styles: fruity, monokai, native
 alias ccat='pygmentize -f terminal256 -O style=native'
 
+# Show layout of current tmux window in a teamocil-friendly format
+alias layout="tmux list-windows -F '#{window_active} #{window_layout}' | awk '/^1 /{print \$2}'"
+
 # If you ever share a program that has a cat statement in it, someone will
 # invariably tell you that you can avoid invoking cat by piping your input file
 # directly into the next part of the pipeline. However, cat can still be nice
