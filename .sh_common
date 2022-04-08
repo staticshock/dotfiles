@@ -26,7 +26,7 @@ alias viom=nvim
 
 export FZF_DEFAULT_COMMAND='ag -l'
 
-export LESS="--RAW-CONTROL-CHARS --jump-target=10"
+export LESS="--RAW-CONTROL-CHARS --jump-target=10 --ignore-case"
 
 # Context
 alias h=hostname
