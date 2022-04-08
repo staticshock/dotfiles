@@ -47,3 +47,62 @@ bindkey '^[[1;9D' backward-word  # Meta-right
 # Source stuff shared between bash and zsh
 [[ -f ~/.sh_common ]] && source ~/.sh_common
 [[ -f ~/.sh_local ]] && source ~/.sh_local
+
+_bikeshed_completion() {
+    local -a completions
+    local -a completions_with_descriptions
+    local -a response
+    response=("${(@f)$( env COMP_WORDS="${words[*]}" \
+                        COMP_CWORD=$((CURRENT-1)) \
+                        _BIKESHED_COMPLETE="complete_zsh" \
+                        bikeshed )}")
+
+    for key descr in ${(kv)response}; do
+      if [[ "$descr" == "_" ]]; then
+          completions+=("$key")
+      else
+          completions_with_descriptions+=("$key":"$descr")
+      fi
+    done
+
+    if [ -n "$completions_with_descriptions" ]; then
+        _describe -V unsorted completions_with_descriptions -U -Q
+    fi
+
+    if [ -n "$completions" ]; then
+        compadd -U -V unsorted -Q -a completions
+    fi
+    compstate[insert]="automenu"
+}
+
+compdef _bikeshed_completion bikeshed;
+
+_vampire_completion() {
+    local -a completions
+    local -a completions_with_descriptions
+    local -a response
+    # use vampire -> ./vampire to test completions
+    response=("${(@f)$( env COMP_WORDS="${words[*]}" \
+                        COMP_CWORD=$((CURRENT-1)) \
+                        _VAMPIRE_COMPLETE="complete_zsh" \
+                        vampire)}")
+
+    for key descr in ${(kv)response}; do
+      if [[ "$descr" == "_" ]]; then
+          completions+=("$key")
+      else
+          completions_with_descriptions+=("$key":"$descr")
+      fi
+    done
+
+    if [ -n "$completions_with_descriptions" ]; then
+        _describe -V unsorted completions_with_descriptions -U -Q
+    fi
+
+    if [ -n "$completions" ]; then
+        compadd -U -V unsorted -Q -a completions
+    fi
+    compstate[insert]="automenu"
+}
+
+compdef _vampire_completion vampire;
