@@ -94,13 +94,15 @@ alias gbm='gh --branches'
 alias ga='git add'
 alias gc='git commit -v'
 alias gb='git branch -vv'
+alias b='git branch | sed s/..// | fzf'
 alias gt='git tag'
-alias gcm='git checkout master'
+alias gcm='git checkout main || git checkout master'
 alias gco='git checkout'
 alias gcp='git cherry-pick'
 alias gr='git remote -v'
 gr-() { git checkout "$1" && git rebase -i -; }
 alias gm='vim x +Gmerge +"bdel x"'
+alias glf='git ls-files | fzf'
 
 alias diff='GIT_DIR=/ git diff'
 
