@@ -71,7 +71,7 @@ Plug 'dahu/vim-fanfingtastic'
 function s:RedrawExtra()
   if expand("%") !~# '^/dev/fd/\d\+$' | checktime | endif
   diffupdate
-  if exists('b:sy') && b:sy.active
+  if exists('b:sy')
     call sy#start()
   endif
 endfunction
@@ -193,7 +193,7 @@ Plug 'mhinz/vim-signify'
 
 " Diff against master by default.
 let g:signify_vcs_cmds = {
-      \  'git': 'git diff master --no-color --no-ext-diff -U0 -- %f'
+      \  'git': 'git diff main --no-color --no-ext-diff -U0 -- %f'
       \ }
 
 " Orig  +Delta = Result:
