@@ -16,6 +16,8 @@ alias nosetests='nosetests --no-byte-compile'
 alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
 alias dc=docker-compose
+
+export PYTHONBREAKPOINT=pudb.set_trace
 alias bp=bpython
 
 # Yeah...
