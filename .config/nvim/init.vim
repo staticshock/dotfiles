@@ -487,4 +487,18 @@ autocmd vimrc BufWinEnter *
       \   setlocal keywordprg=:Git\ show |
       \ endif
 
+nnoremap <silent> ++ :call Preserve("normal gg=G")<cr>zz
+
+" Syntax highlighting for "JSON with Comments"
+Plug 'kevinoid/vim-jsonc'
+
+" Pull up netrw on <leader>e
+nnoremap <leader>e :Explore<cr>
+
+" Don't let me make changes to a file if I don't have write access to it.
+autocmd BufRead * let &l:modifiable = !&readonly
+
+" Syntax highlighting for *.graphql, *.graphqls, and *.gql
+Plug 'jparise/vim-graphql'
+
 call plug#end()
