@@ -15,14 +15,16 @@ alias tree="tree --charset=ascii"
 alias nosetests='nosetests --no-byte-compile'
 alias synergys="synergys -f --config ~/.synergyrc"
 alias xclip="xclip -selection clipboard"
+alias dc=docker-compose
 alias bp=bpython
 
 # Yeah...
-export EDITOR=nvim
 alias vi=nvim
 alias vim=nvim
+alias vl='nvim -c "normal! '\''0"'  # Re-open the most recently opened file
 alias voim=nvim
 alias viom=nvim
+export EDITOR=nvim
 
 export FZF_DEFAULT_COMMAND='ag -l'
 
