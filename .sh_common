@@ -188,6 +188,11 @@ resolve_real_exe_path() {
 [[ -d /usr/local/bin ]] && PATH=/usr/local/bin:$PATH
 [[ -d /usr/local/sbin ]] && PATH=/usr/local/sbin:$PATH
 
+# Android development
+export ANDROID_HOME=/Users/anton/Library/Android/sdk
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home
+PATH=$PATH:$JAVA_HOME/bin
+
 # Prefix misc binaries to $PATH
 [[ -d ~/bin ]] && PATH=$HOME/bin:$PATH
 
