@@ -211,8 +211,8 @@ if [[ -d "$_default_python_env" ]]; then
 fi
 
 # Ruby on OS X
-if [[ -d /Library/Ruby/Gems/2.0.0 ]]; then
-    export GEM_HOME="$HOME/.gem/ruby/2.0.0"
+if [[ -d /Library/Ruby/Gems/2.6.0 ]]; then
+    export GEM_HOME="$HOME/.gem/ruby/2.6.0"
     PATH="$GEM_HOME/bin:$PATH"
 fi
 
