@@ -248,6 +248,6 @@ if [[ -d "$_default_go_env" ]]; then
 fi
 
 # Source extras
-[[ -d ~/.dotfiles/sh-extras ]] && for f in ~/.dotfiles/sh-extras/*; do
+[[ -d ~/src/dotfiles/sh-extras ]] && for f in ~/src/dotfiles/sh-extras/*; do
     source "$f"
 done
