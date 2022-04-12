@@ -108,5 +108,16 @@ _vampire_completion() {
 compdef _vampire_completion vampire;
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+_default_node_version=v12.22.1
+_default_node_path="$NVM_DIR/versions/node/$_default_node_version"
+if [ -d "$_default_node_path" ]; then
+    # Having a default node version significantly speeds up nvm.sh execution on
+    # shell start-up. Courtesy of
+    # https://www.ioannispoulakas.com/2020/02/22/how-to-speed-up-shell-load-while-using-nvm/
+    export PATH=$_default_node_path/bin:$PATH
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" --no-use    # This loads nvm
+else
+    echo "Node $_default_node_version not found; initializing nvm the slow way..."
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"    # This loads nvm
+fi
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
