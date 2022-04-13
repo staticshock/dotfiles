@@ -4,57 +4,39 @@
 <array>
 	<dict>
 		<key>phrase</key>
-		<string>⅚</string>
+		<string>≠</string>
 		<key>shortcut</key>
-		<string>5/6</string>
+		<string>!=</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>⅙</string>
+		<string>±</string>
 		<key>shortcut</key>
-		<string>1/6</string>
+		<string>+-</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>⅘</string>
+		<string>±</string>
 		<key>shortcut</key>
-		<string>4/5</string>
+		<string>+/-</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>⅞</string>
+		<string>→</string>
 		<key>shortcut</key>
-		<string>7/8</string>
+		<string>-&gt;</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>⅝</string>
+		<string>…</string>
 		<key>shortcut</key>
-		<string>5/8</string>
+		<string>...</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>⅜</string>
+		<string>½</string>
 		<key>shortcut</key>
-		<string>3/8</string>
-	</dict>
-	<dict>
-		<key>phrase</key>
-		<string>⅗</string>
-		<key>shortcut</key>
-		<string>3/5</string>
-	</dict>
-	<dict>
-		<key>phrase</key>
-		<string>⅖</string>
-		<key>shortcut</key>
-		<string>2/5</string>
-	</dict>
-	<dict>
-		<key>phrase</key>
-		<string>⅔</string>
-		<key>shortcut</key>
-		<string>2/3</string>
+		<string>1/2</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
@@ -64,15 +46,21 @@
 	</dict>
 	<dict>
 		<key>phrase</key>
+		<string>¼</string>
+		<key>shortcut</key>
+		<string>1/4</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
 		<string>⅕</string>
 		<key>shortcut</key>
 		<string>1/5</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>¾</string>
+		<string>⅙</string>
 		<key>shortcut</key>
-		<string>3/4</string>
+		<string>1/6</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
@@ -82,15 +70,63 @@
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>¼</string>
+		<string>⅔</string>
 		<key>shortcut</key>
-		<string>1/4</string>
+		<string>2/3</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>½</string>
+		<string>⅖</string>
 		<key>shortcut</key>
-		<string>1/2</string>
+		<string>2/5</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>¾</string>
+		<key>shortcut</key>
+		<string>3/4</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅗</string>
+		<key>shortcut</key>
+		<string>3/5</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅜</string>
+		<key>shortcut</key>
+		<string>3/8</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅘</string>
+		<key>shortcut</key>
+		<string>4/5</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅚</string>
+		<key>shortcut</key>
+		<string>5/6</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅝</string>
+		<key>shortcut</key>
+		<string>5/8</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>⅞</string>
+		<key>shortcut</key>
+		<string>7/8</string>
+	</dict>
+	<dict>
+		<key>phrase</key>
+		<string>←</string>
+		<key>shortcut</key>
+		<string>&lt;-</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
@@ -118,27 +154,15 @@
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>←</string>
+		<string>℃</string>
 		<key>shortcut</key>
-		<string>&lt;-</string>
+		<string>ºC</string>
 	</dict>
 	<dict>
 		<key>phrase</key>
-		<string>→</string>
+		<string>℉</string>
 		<key>shortcut</key>
-		<string>-&gt;</string>
-	</dict>
-	<dict>
-		<key>phrase</key>
-		<string>±</string>
-		<key>shortcut</key>
-		<string>+-</string>
-	</dict>
-	<dict>
-		<key>phrase</key>
-		<string>±</string>
-		<key>shortcut</key>
-		<string>+/-</string>
+		<string>ºF</string>
 	</dict>
 </array>
 </plist>
