@@ -28,7 +28,11 @@ alias voim=nvim
 alias viom=nvim
 export EDITOR=nvim
 
+alias mk=make
+
 export FZF_DEFAULT_COMMAND='ag -l'
+
+alias ag='ag --width=200'
 
 export LESS="--RAW-CONTROL-CHARS --jump-target=10 --ignore-case"
 
@@ -66,7 +70,7 @@ alias gs='git show'
 alias gh='git log --oneline --graph --decorate -n25'
 alias ga='git add'
 alias gc='git commit -v'
-alias gb='git branch -vv'
+alias gb='git branch -vv --sort=-committerdate'
 alias b='git branch | sed s/..// | fzf'
 alias gt='git tag'
 alias gcm='git checkout main || git checkout master'
@@ -74,8 +78,21 @@ alias gco='git checkout'
 alias gcp='git cherry-pick'
 gr-() { git checkout "$1" && git rebase -i -; }
 alias glf='git ls-files | fzf'
+git-prune-branches() {
+  git fetch --all --prune && git branch -v | awk '/\[gone\]/{print $1}' | xargs git branch -D
+}
 
 alias diff='GIT_DIR=/ git diff'
+
+alias pr='git push -u origin HEAD && command gh pr create --fill --base staging'
+
+alias serve='echo http://localhost:5000 && python -m http.server 5000 -d .'
+
+alias dig='grc dig'
+alias ping='grc ping'
+alias ps='grc ps'
+alias lsof='grc lsof'
+alias netstat='grc netstat'
 
 # Miscellaneous binaries
 [[ -d ~/bin ]] && PATH=$HOME/bin:$PATH
@@ -120,7 +137,7 @@ fi
 
 # Node
 export NVM_DIR="$HOME/.nvm"
-_default_node_version=v18.16.1
+_default_node_version=v20.11.0
 _default_node_path="$NVM_DIR/versions/node/$_default_node_version"
 if [ -d "$_default_node_path" ]; then
     # Having a default node version significantly speeds up nvm.sh execution on
@@ -172,11 +189,10 @@ if [[ -d "$_default_go_env" ]]; then
 fi
 
 # Android
-export ANDROID_HOME=/Users/anton/Library/Android/sdk
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export JAVA_HOME=/opt/homebrew/opt/openjdk
 [[ -d $JAVA_HOME ]] && PATH=$JAVA_HOME/bin:$PATH
 
-# Extras
-[[ -d ~/src/dotfiles/sh-extras ]] && for f in ~/src/dotfiles/sh-extras/*; do
-    source "$f"
-done
+# Google Cloud SDK
+CLOUDSDK=$HOME/google-cloud-sdk
+[[ -d $CLOUDSDK ]] && PATH=$CLOUDSDK/bin:$PATH
