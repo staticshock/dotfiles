@@ -25,7 +25,7 @@ nmap <silent> <leader><leader> :update<cr><c-l>
 augroup vimrc | execute 'autocmd!' | augroup END
 
 " Use the system fzf executable instead of a separate version
-Plug '/usr/local/opt/fzf'
+Plug '/opt/homebrew/opt/fzf'
 Plug 'junegunn/fzf.vim'
 
 " Fuzzy find hidden buffers, MRU history, and profile files (with fzf)
