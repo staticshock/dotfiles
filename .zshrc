@@ -108,7 +108,7 @@ _vampire_completion() {
 compdef _vampire_completion vampire;
 
 export NVM_DIR="$HOME/.nvm"
-_default_node_version=v12.22.1
+_default_node_version=v18.16.1
 _default_node_path="$NVM_DIR/versions/node/$_default_node_version"
 if [ -d "$_default_node_path" ]; then
     # Having a default node version significantly speeds up nvm.sh execution on
