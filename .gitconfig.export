@@ -1,6 +1,6 @@
 # vim:ft=gitconfig
 [user]
-	email = anton.backer@newsela.com
+	email = olegov@gmail.com
 	name = Anton Backer
 [core]
 	pager = less -FX
