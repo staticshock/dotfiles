@@ -49,7 +49,7 @@ function s:FzfFallback()
   " :Files queries are ignored here because they use a different, harder to
   " match prompt format.
   let line = getline('.')
-  let query = substitute(line, '\v^(Hist|Buf|GitFiles|Locate)\> ?', '', '')
+  let query = substitute(line, '\v│ (Hist|Buf|GitFiles|Locate)\> ([^ ]*).*', '\1', '')
   let query = query != line ? query : ''
   close
   sleep 100m
