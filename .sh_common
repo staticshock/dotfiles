@@ -44,8 +44,6 @@ function cd() { builtin cd $1 && ls; }
 alias nbsp="GREP_COLOR='44' grep -I $'\u00A0'"
 # Highlight DOS newlines
 alias crlf="GREP_COLOR='44' grep -IU $'\r\n'"
-# decent-looking pygmentize styles: fruity, monokai, native
-alias ccat='pygmentize -f terminal256 -O style=native'
 
 # Show layout of current tmux window in a teamocil-friendly format
 alias layout="tmux list-windows -F '#{window_active} #{window_layout}' | awk '/^1 /{print \$2}'"
@@ -59,30 +57,6 @@ alias useless_cat=cat
 
 # Text processing / formatting
 alias cuts="cut -d ' '"
-alias beautifyjs="uglifyjs -b --overwrite"
-# List the files modified by a patch
-lsdiff() {
-    grep '^\(---\|+++\) ' "$@" | cut -f 1
-}
-# Diff the first file argument to the remaining file arguments, and find the
-# most similar one
-shortestdiff() {
-    for f in "${@:2}"; do
-        echo "$(diff "$1" "$f" | wc -l)\t$f"
-    done | sort -n
-}
-# Show the results of a potential sed invocation as a diff. Invoked with the
-# same arguments as sed.
-sedtest() {
-    local args file
-    args=("${@:1:$(($# -1))}")  # all but the last arg
-    file="${@: -1}"  # last arg
-    colordiff "$file" <(command sed "${args[@]}" "$file")
-}
-
-# Source control
-# http://stackoverflow.com/a/239358/419876
-alias svn-clean='svn status | grep ^\? | cut -c9- | xargs -I {} -d \\n rm -r {}'
 
 # Git aliases
 alias gst='git status -s; git stash list'
@@ -90,7 +64,6 @@ alias gd='git diff'
 alias gdc='git diff --cached'
 alias gs='git show'
 alias gh='git log --oneline --graph --decorate -n25'
-alias gbm='gh --branches'
 alias ga='git add'
 alias gc='git commit -v'
 alias gb='git branch -vv'
@@ -99,118 +72,69 @@ alias gt='git tag'
 alias gcm='git checkout main || git checkout master'
 alias gco='git checkout'
 alias gcp='git cherry-pick'
-alias gr='git remote -v'
 gr-() { git checkout "$1" && git rebase -i -; }
-alias gm='vim x +Gmerge +"bdel x"'
 alias glf='git ls-files | fzf'
 
 alias diff='GIT_DIR=/ git diff'
 
-# Verify the spelling of an svn commit
-# Usage: spellcommit <repo> <commit number>
-spellcommit() {
-    diff=/tmp/$RANDOM.diff
-    svn diff -c $2 $1 | grep '^+' | grep -v '^+++' > $diff
-    scspell $diff
-    \rm $diff
-}
-# Usage: fixspelling . <typo> <fix>
-fixspelling() {
-    while IFS= read -r -d $'\0' file; do
-        echo "Updating $file"
-        sed -i "s/$2/$3/g" "$file"
-    done < <(rgrep -IilZ "$2" "$1")
-}
-
-# Misc
-alias freenode="weechat -r '/connect freenode'"
-alias get='sudo apt-fast install -y'
-# Swap the names of two files
-swap() {
-    tmp="${1%/}~$RANDOM~$RANDOM"
-    mv "$1" "$tmp"
-    mv "$2" "$1"
-    mv "$tmp" "$2"
-}
-# Play random muisc from a directory
-# random-music <dir>
-random-music() {
-    mplayer -shuffle -playlist <(find "$1" -name "*\.flac" -o -name "*\.mp3" -o -name "*\.wav" -o -name "*\.m4a")
-}
-# Turn hex into a binary string
-a2b_hex() {
-    python -c "import binascii as b; print(repr(b.a2b_hex('$1')))"
-}
-# Add the SHA1 sums to the sums file for specified files that aren't already
-# present in the sums file.
-# Usage: sha1sum-missing <sum file> <file1> [file2] ...
-sha1sum-missing() {
-    if [ $# -lt 2 ]; then echo "Usage: $0 <sum file> <file1> [file2] ..."; return; fi
-    sum_file="$1"
-    shift
-    comm -23 <(ls "$@") <(cut -d' ' -f3 "$sum_file" | sort) |
-        xargs -r sha1sum |
-        tee -a "$sum_file"
-    sort -k2 "$sum_file" -o "$sum_file"
-}
-
-# Something like `readlink -f`, but works on OS X
-# Changes pwd; intended to be used in a subshell: real_path=$(readlink_f path/to/file)
-readlink_f() {
-    file_path=$1
-
-    builtin cd "$(dirname "$file_path")"
-    file_name=$(basename "$file_path")
-
-    while [[ -L "$file_name" ]]
-    do
-        file_path=$(readlink "$file_name")
-        builtin cd "$(dirname "$file_path")"
-        file_name=$(basename "$file_path")
-    done
-
-    echo "$(pwd -P)/$file_name"
-}
-
-# Something like `readlink -f`, but parameter is a binary name instead of a path
-# Changes pwd; intended to be used in a subshell: real_path=$(resolve_real_exe_path exe)
-# Does not discern shell built-ins
-resolve_real_exe_path() {
-    file=$(which "$1")
-    (( $? == 0 )) || return $?
-    readlink_f "$file"
-}
-
-# Force tty to behave as a 256-color terminal
-[[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
-
-# Prefix homebrew packages to $PATH
-[[ -d /usr/local/bin ]] && PATH=/usr/local/bin:$PATH
-[[ -d /usr/local/sbin ]] && PATH=/usr/local/sbin:$PATH
-
-# Android development
-export ANDROID_HOME=/Users/anton/Library/Android/sdk
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home
-PATH=$PATH:$JAVA_HOME/bin
-
-# Prefix misc binaries to $PATH
+# Miscellaneous binaries
 [[ -d ~/bin ]] && PATH=$HOME/bin:$PATH
 
-# Amend bash completion
-arc_path=$(resolve_real_exe_path arc)
-if (( $? == 0 )); then
-    # Arc executable lives in in arcanist/bin/arc
-    arc_completion="${arc_path%/*}/../resources/shell/bash-completion"
-    [[ -f "$arc_completion" ]] && . "$arc_completion"
+# Homebrew
+_homebrew_root=/opt/homebrew
+if [[ -d $_homebrew_root ]]; then
+  PATH=$_homebrew_root/bin:$PATH
+  PATH=$_homebrew_root/sbin:$PATH
+  PATH=$_homebrew_root/anaconda3/bin:$PATH
 fi
 
-# Default python environment
-_default_python_env=$HOME/.pyenv/default
-if [[ -d "$_default_python_env" ]]; then
-    VIRTUAL_ENV_DISABLE_PROMPT=1 source $_default_python_env/bin/activate
+# Python / pyenv
+if command -v pyenv >/dev/null; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+
+  # Condensed output of `pyenv init -`
+  export PATH=$HOME/.pyenv/shims:${PATH}
+  export PYENV_SHELL=zsh
+  local _pyenv_package_root=$(set -- $_homebrew_root/Cellar/pyenv/*; echo "$1")
+  source $_pyenv_package_root/completions/pyenv.zsh
+  command pyenv rehash 2>/dev/null
+
+  pyenv() {
+    local command
+    command="${1:-}"
+    if [ "$#" -gt 0 ]; then
+      shift
+    fi
+
+    case "$command" in
+    rehash|shell)
+      eval "$(pyenv "sh-$command" "$@")"
+      ;;
+    *)
+      command pyenv "$command" "$@"
+      ;;
+    esac
+  }
 fi
 
-# Ruby on OS X
+# Node
+export NVM_DIR="$HOME/.nvm"
+_default_node_version=v18.16.1
+_default_node_path="$NVM_DIR/versions/node/$_default_node_version"
+if [ -d "$_default_node_path" ]; then
+    # Having a default node version significantly speeds up nvm.sh execution on
+    # shell start-up. Courtesy of
+    # https://www.ioannispoulakas.com/2020/02/22/how-to-speed-up-shell-load-while-using-nvm/
+    export PATH=$_default_node_path/bin:$PATH
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" --no-use    # This loads nvm
+else
+    echo "Node $_default_node_version not found; initializing nvm the slow way..."
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"    # This loads nvm
+fi
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
+
+# Ruby
 if [[ -d /Library/Ruby/Gems/2.6.0 ]]; then
     export GEM_HOME="$HOME/.gem/ruby/2.6.0"
     PATH="$GEM_HOME/bin:$PATH"
@@ -244,10 +168,15 @@ fi
 _default_go_env=$HOME/.goenv/default
 if [[ -d "$_default_go_env" ]]; then
     export GOPATH=$_default_go_env
-    PATH=$PATH:$GOPATH/bin
+    PATH=$GOPATH/bin:$PATH
 fi
 
-# Source extras
+# Android
+export ANDROID_HOME=/Users/anton/Library/Android/sdk
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home
+[[ -d $JAVA_HOME ]] && PATH=$JAVA_HOME/bin:$PATH
+
+# Extras
 [[ -d ~/src/dotfiles/sh-extras ]] && for f in ~/src/dotfiles/sh-extras/*; do
     source "$f"
 done
