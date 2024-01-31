@@ -106,6 +106,7 @@ Plug 'tpope/vim-unimpaired'
 nnoremap [om :set mouse=a<cr>
 nnoremap ]om :set mouse=<cr>
 nnoremap yom :normal <c-r>=&mouse == 'a' ? ']om' : '[om'<cr><cr>
+set mouse=
 
 " Number every line
 set number
@@ -417,8 +418,6 @@ Plug 'tpope/vim-fugitive'
 " Adds github handler for Gbrowse
 Plug 'tpope/vim-rhubarb'
 
-Plug 'SirVer/ultisnips'
-
 " Make it easier to leave nvim terminal's insert mode
 tnoremap <esc> <c-\><c-n>
 
@@ -500,5 +499,7 @@ autocmd BufRead * let &l:modifiable = !&readonly
 
 " Syntax highlighting for *.graphql, *.graphqls, and *.gql
 Plug 'jparise/vim-graphql'
+
+Plug 'prisma/vim-prisma'
 
 call plug#end()
