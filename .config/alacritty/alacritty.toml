@@ -1,0 +1,53 @@
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black = "0x676767"
+blue = "0x6871ff"
+cyan = "0x5ffdff"
+green = "0x5ff967"
+magenta = "0xff76ff"
+red = "0xff6d67"
+white = "0xfeffff"
+yellow = "0xfefb67"
+
+[colors.normal]
+black = "0x000000"
+blue = "0x0225c7"
+cyan = "0x00c5c7"
+green = "0x00c200"
+magenta = "0xc930c7"
+red = "0xc91b00"
+white = "0xc7c7c7"
+yellow = "0xc7c400"
+
+[colors.primary]
+background = "0x000000"
+foreground = "0xc7c7c7"
+
+[env]
+LANG = "en_US.UTF-8"
+TERM = "xterm-256color"
+
+[font]
+size = 15.0
+
+[font.bold]
+family = "Monaco"
+style = "Bold"
+
+[font.bold_italic]
+family = "Monaco"
+style = "Bold Italic"
+
+[font.italic]
+family = "Monaco"
+style = "Italic"
+
+[font.normal]
+family = "Monaco"
+style = "Regular"
+
+[window.padding]
+x = 4
+y = 0
