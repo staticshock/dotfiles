@@ -3,7 +3,7 @@
 	email = olegov@gmail.com
 	name = Anton Backer
 [core]
-	pager = less -FX
+	pager = delta # brew install delta
 	excludesfile = ~/.gitignore_global
 [alias]
 	hist = log --oneline --graph --decorate -n 20
@@ -51,3 +51,6 @@
 	required = true
 [notes]
 	rewriteRef = refs/notes/commits
+[delta]
+	#syntax-theme = Coldark-Dark
+	side-by-side = true
