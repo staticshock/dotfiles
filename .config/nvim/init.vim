@@ -443,14 +443,9 @@ Plug 'tpope/vim-abolish'
 inoremap <f12> <nop>
 cnoremap <f12> <nop>
 
-" Pretty-print HTML.
-autocmd vimrc FileType html setlocal equalprg=tidy
-      \\ -indent\ -wrap\ 0
-      \\ -quiet\ --show-errors\ 0
-      \\ --show-body-only\ auto
-      \\ --tidy-mark\ no
-      \\ -
-      \\ \|\|\ true
+autocmd vimrc FileType html setlocal equalprg=prettier\ --parser\ html
+autocmd vimrc FileType css setlocal equalprg=prettier\ --parser\ css
+autocmd vimrc FileType javascript,typescript setlocal equalprg=prettier\ --parser\ typescript
 
 " Improve default python indentation for multi-line [], {}, () expressions.
 Plug 'Vimjas/vim-python-pep8-indent'
@@ -501,5 +496,7 @@ autocmd BufRead * let &l:modifiable = !&readonly
 Plug 'jparise/vim-graphql'
 
 Plug 'prisma/vim-prisma'
+
+Plug 'hashivim/vim-terraform'
 
 call plug#end()
