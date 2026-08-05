@@ -4,31 +4,27 @@
 set +o histexpand
 
 # Make some commands verbose
-for cmd in cp mv rm chmod chown rename; do
+for cmd in cp mv rm chmod rename; do
     alias $cmd="$cmd -v"
 done
 
 # Add default args to some commands
 alias grep="grep -I --ignore-case --exclude-dir=.git --exclude-dir=.svn"
-alias rgrep="grep --recursive"
 alias tree="tree --charset=ascii"
-alias nosetests='nosetests --no-byte-compile'
-alias synergys="synergys -f --config ~/.synergyrc"
-alias xclip="xclip -selection clipboard"
 alias dc=docker-compose
-
-export PYTHONBREAKPOINT=pudb.set_trace
-alias bp=bpython
 
 # Yeah...
 alias vi=nvim
 alias vim=nvim
-alias vl='nvim -c "normal! '\''0"'  # Re-open the most recently opened file
 alias voim=nvim
-alias viom=nvim
 export EDITOR=nvim
 
-alias mk=make
+alias ding='sh -c "afplay /System/Library/Sounds/Hero.aiff &"'
+alias womp='sh -c "afplay /System/Library/Sounds/Funk.aiff &"'
+
+function mk() {
+  make "$@" && ding || womp
+}
 
 export FZF_DEFAULT_COMMAND='ag -l'
 
@@ -36,11 +32,20 @@ alias ag='ag --width=200'
 
 export LESS="--RAW-CONTROL-CHARS --jump-target=10 --ignore-case"
 
+# Add existing directories to PATH without introducing duplicates.
+function path_prepend() {
+  [[ -d $1 ]] || return
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) export PATH="$1${PATH:+:$PATH}" ;;
+  esac
+}
+
 # Context
 alias h=hostname
 alias parents='pstree --ascii --show-parents --show-pids --arguments --highlight-pid=$$ $$ | grep -e "" -e "${SHELL##*/}"'
 alias path=$'echo $PATH | tr : "\n"'
-function cd() { builtin cd $1 && ls; }
+function cd() { builtin cd "$@" && ls; }
 
 # Highlighting
 # Pasting snippets from workflowy, sometimes I encounter spaces replaced with
@@ -49,43 +54,44 @@ alias nbsp="GREP_COLOR='44' grep -I $'\u00A0'"
 # Highlight DOS newlines
 alias crlf="GREP_COLOR='44' grep -IU $'\r\n'"
 
-# Show layout of current tmux window in a teamocil-friendly format
-alias layout="tmux list-windows -F '#{window_active} #{window_layout}' | awk '/^1 /{print \$2}'"
-
-# If you ever share a program that has a cat statement in it, someone will
-# invariably tell you that you can avoid invoking cat by piping your input file
-# directly into the next part of the pipeline. However, cat can still be nice
-# because it lets your data flow from left to right. useless_cat is just my way
-# of saying, "I already know my cat is useless. I still love it."
-alias useless_cat=cat
-
 # Text processing / formatting
 alias cuts="cut -d ' '"
 
 # Git aliases
-alias gst='git status -s; git stash list'
-alias gd='git diff'
-alias gdc='git diff --cached'
+alias g=git
+alias gst='git status -s; git stash list; git bisect log 2>/dev/null'
+alias gd='git diff --ignore-space-change'
+alias gdc='git diff --cached --ignore-space-change'
 alias gs='git show'
-alias gh='git log --oneline --graph --decorate -n25'
+alias gh='git log --oneline --graph --decorate --first-parent -n25'
 alias ga='git add'
 alias gc='git commit -v'
 alias gb='git branch -vv --sort=-committerdate'
+alias gsw='gco $(gb | fzf | sed "s/^..//;s/ .*//")'
 alias gr='git remote -v'
-alias b='git branch | sed s/..// | fzf'
+alias gri='git rebase --interactive'
+alias grim='gri origin/main'
+alias b='git branch --sort=-committerdate | sed s/..// | fzf'
 alias gt='git tag'
 alias gcm='git checkout main || git checkout master'
-alias gco='git checkout'
+function gco() { git checkout "$@" && gst; }
 alias gcp='git cherry-pick'
-gr-() { git checkout "$1" && git rebase -i -; }
-alias glf='git ls-files | fzf'
-git-prune-branches() {
+function gr-() { git checkout "$1" && git rebase -i -; }
+alias glf='git ls-files | fzf | tr -d "\n" | pbcopy'
+function git-prune-branches() {
   git fetch --all --prune && git branch -v | awk '/\[gone\]/{print $1}' | xargs git branch -D
 }
+alias gw='git worktree'
+
+# Frequently used directory aliases formerly supplied by Oh My Zsh.
+alias cd..='cd ..'
+alias d='dirs -v | head -10'
+alias l='ls -lah'
+alias la='ls -lAh'
 
 alias diff='GIT_DIR=/ git diff'
 
-alias pr='git push -u origin HEAD && command gh pr create --fill --base staging'
+alias pr='git push -u origin HEAD && command gh pr create --fill --base main'
 
 alias serve='echo http://localhost:5000 && python -m http.server 5000 -d .'
 
@@ -93,107 +99,38 @@ alias dig='grc dig'
 alias ping='grc ping'
 alias ps='grc ps'
 alias lsof='grc lsof'
-alias netstat='grc netstat'
 
-# Miscellaneous binaries
-[[ -d ~/bin ]] && PATH=$HOME/bin:$PATH
+# jq-structure: https://github.com/jqlang/jq/issues/243#issuecomment-48470943
+function jqs() {
+  jq -r '[path(..)|map(if type=="number" then "[]" else tostring end)|join(".")|split(".[]")|join("[]")]|unique|map("."+.)|.[]' "$@"
+}
 
-# Homebrew
+# Base command paths. Each entry is prepended, so list lower-priority paths
+# first.
 _homebrew_root=/opt/homebrew
-if [[ -d $_homebrew_root ]]; then
-  PATH=$_homebrew_root/bin:$PATH
-  PATH=$_homebrew_root/sbin:$PATH
-  PATH=$_homebrew_root/anaconda3/bin:$PATH
-fi
+path_prepend "$_homebrew_root/anaconda3/bin"
+path_prepend "$_homebrew_root/sbin"
+path_prepend "$_homebrew_root/bin"
+path_prepend "$HOME/bin"
+unset _homebrew_root
 
-# Python / pyenv
-if command -v pyenv >/dev/null; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-
-  # Condensed output of `pyenv init -`
-  export PATH=$HOME/.pyenv/shims:${PATH}
-  export PYENV_SHELL=zsh
-  local _pyenv_package_root=$(set -- $_homebrew_root/Cellar/pyenv/*; echo "$1")
-  source $_pyenv_package_root/completions/pyenv.zsh
-  command pyenv rehash 2>/dev/null
-
-  pyenv() {
-    local command
-    command="${1:-}"
-    if [ "$#" -gt 0 ]; then
-      shift
-    fi
-
-    case "$command" in
-    rehash|shell)
-      eval "$(pyenv "sh-$command" "$@")"
-      ;;
-    *)
-      command pyenv "$command" "$@"
-      ;;
-    esac
-  }
-fi
-
-# Node
-export NVM_DIR="$HOME/.nvm"
-_default_node_version=v20.11.0
-_default_node_path="$NVM_DIR/versions/node/$_default_node_version"
-if [ -d "$_default_node_path" ]; then
-    # Having a default node version significantly speeds up nvm.sh execution on
-    # shell start-up. Courtesy of
-    # https://www.ioannispoulakas.com/2020/02/22/how-to-speed-up-shell-load-while-using-nvm/
-    export PATH=$_default_node_path/bin:$PATH
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" --no-use    # This loads nvm
-else
-    echo "Node $_default_node_version not found; initializing nvm the slow way..."
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"    # This loads nvm
-fi
-[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
-
-# Ruby
-if [[ -d /Library/Ruby/Gems/2.6.0 ]]; then
-    export GEM_HOME="$HOME/.gem/ruby/2.6.0"
-    PATH="$GEM_HOME/bin:$PATH"
-fi
-
-# RVM
-if [[ -d "$HOME/.rvm" ]]; then
-    # Add RVM to PATH for scripting
-    PATH=$PATH:$HOME/.rvm/bin
-
-    # Configure env as if `rvm use default_rvm_ruby@default_rvm_gemset` was executed:
-    default_rvm_ruby=ruby-1.9.3-p448
-    default_rvm_gemset=
-    global_gem_home=$HOME/.rvm/gems/$default_rvm_ruby@global
-    if [[ -d $HOME/.rvm/gems/$default_rvm_ruby ]]; then
-        export GEM_HOME=$HOME/.rvm/gems/$default_rvm_ruby
-        export GEM_PATH=$GEM_HOME:$global_gem_home
-        PATH=\
-$GEM_HOME/bin:\
-$global_gem_home/bin:\
-$HOME/.rvm/rubies/$default_rvm_ruby/bin:\
-$PATH
-        [[ -z $default_rvm_gemset ]] || PATH=$HOME/.rvm/gems/$default_rvm_ruby$default_rvm_gemset/bin:$PATH
-    fi
-
-    # If the session is interactive, load RVM into a shell session *as a function*
-    [[ $- == *i* ]] && source "$HOME/.rvm/scripts/rvm"
-fi
-
-# Go
-_default_go_env=$HOME/.goenv/default
-if [[ -d "$_default_go_env" ]]; then
-    export GOPATH=$_default_go_env
-    PATH=$GOPATH/bin:$PATH
-fi
+# PNPM
+export PNPM_HOME="$HOME/Library/pnpm"
+path_prepend "$PNPM_HOME"
 
 # Android
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export JAVA_HOME=/opt/homebrew/opt/openjdk
-[[ -d $JAVA_HOME ]] && PATH=$JAVA_HOME/bin:$PATH
+path_prepend "$JAVA_HOME/bin"
 
 # Google Cloud SDK
 CLOUDSDK=$HOME/google-cloud-sdk
-[[ -d $CLOUDSDK ]] && PATH=$CLOUDSDK/bin:$PATH
+path_prepend "$CLOUDSDK/bin"
+
+# Interactive application commands should take precedence over toolchain paths.
+path_prepend "$HOME/.codeium/windsurf/bin"
+path_prepend "$HOME/.local/bin"
+
+unset -f path_prepend
+
+alias claude="claude --allow-dangerously-skip-permissions"

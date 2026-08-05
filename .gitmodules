@@ -1,6 +1,3 @@
-[submodule ".oh-my-zsh"]
-	path = .oh-my-zsh
-	url = https://github.com/robbyrussell/oh-my-zsh.git
 [submodule "mixins/apt-cyg"]
 	path = mixins/apt-cyg
 	url = https://github.com/rcmdnk/apt-cyg

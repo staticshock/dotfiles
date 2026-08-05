@@ -1,45 +1,94 @@
 #!/bin/zsh
 
-# Configure oh-my-zsh
-ZSH=$HOME/.oh-my-zsh
-if [[ -n $ZSH ]]; then
-    # Case-sensitive completion
-    #CASE_SENSITIVE="true"
-    COMPLETION_WAITING_DOTS="true"
-    #DISABLE_AUTO_TITLE="true"
-    #DISABLE_LS_COLORS="true"
-    # Disable bi-weekly auto-update checks
-    DISABLE_AUTO_UPDATE="true"
-    #export UPDATE_ZSH_DAYS=13
-    plugins=(git)
-    source $ZSH/oh-my-zsh.sh
-    # Don't auto-correct commands
-    unsetopt correct_all
-fi
+# Keep PATH ordered and free of duplicate entries as startup files add tools.
+typeset -U path PATH
 
+# History
+HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 HISTSIZE=10000000
 SAVEHIST=10000000
 
-PROMPT="\
-%{$fg[cyan]%}%m%{$reset_color%}:\
-%{$fg_bold[cyan]%}%~\
-\$(git_prompt_info)%{$reset_color%}
-\$ "
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt share_history
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[white]%} <%{$fg[magenta]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[white]%}"
-# Do nothing if the branch is clean (no changes).
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[white]%}>"
-# Add a yellow ✗ if the branch is dirty
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[white]%}> %{$fg[yellow]%}✗"
+# Completion
+autoload -Uz compinit
+compinit -d "${ZDOTDIR:-$HOME}/.zcompdump"
 
-# Bind <c-x><c-e> to "edit command line"
-autoload edit-command-line
+unsetopt menu_complete
+unsetopt flowcontrol
+setopt auto_menu
+setopt complete_in_word
+setopt always_to_end
 
-# OS X bindings
-bindkey '^[[1;9C' forward-word  # Meta-left
-bindkey '^[[1;9D' backward-word  # Meta-right
+WORDCHARS=''
+zmodload -i zsh/complist
+zstyle ':completion:*' matcher-list \
+    'm:{a-zA-Z}={A-Za-z}' \
+    'r:|[._-]=* r:|=*' \
+    'l:|=* r:|=*'
+zstyle ':completion:*' menu select
+zstyle ':completion:*:cd:*' tag-order \
+    local-directories directory-stack path-directories
 
-# Source stuff shared between bash and zsh
+# Shell behavior formerly supplied by Oh My Zsh.
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushd_minus
+setopt multios
+
+# Prompt
+setopt prompt_subst
+
+function git_prompt_info() {
+    local ref git_status
+
+    ref=$(command git symbolic-ref --quiet --short HEAD 2>/dev/null) || \
+        ref=$(command git rev-parse --short HEAD 2>/dev/null) || return
+    git_status=$(command git status --porcelain --ignore-submodules=dirty 2>/dev/null)
+
+    # Git permits percent signs in branch names, but Zsh interprets them as
+    # prompt escapes.
+    ref=${ref//\%/%%}
+
+    print -nr -- "%F{white} <%F{magenta}${ref}%F{white}>"
+    [[ -z $git_status ]] || print -nr -- ' %F{yellow}✗'
+}
+
+PROMPT='%F{cyan}%m%f:%B%F{cyan}%~%f%b$(git_prompt_info)%f
+$ '
+
+# Colored directory listings on BSD/macOS and GNU systems.
+export LSCOLORS='Gxfxcxdxbxegedabagacad'
+if [[ $OSTYPE == darwin* ]]; then
+    alias ls='ls -G'
+else
+    alias ls='ls --color=auto'
+fi
+
+# Key bindings
+bindkey -e
+bindkey '^R' history-incremental-search-backward
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;9C' forward-word
+bindkey '^[[1;9D' backward-word
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
+[[ -z ${terminfo[kcbt]} ]] || \
+    bindkey "${terminfo[kcbt]}" reverse-menu-complete
+
+# Source general-purpose and private configuration last so local definitions
+# can override these defaults.
 [[ -f ~/.sh_common ]] && source ~/.sh_common
 [[ -f ~/.sh_local ]] && source ~/.sh_local
