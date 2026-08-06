@@ -1,0 +1,25 @@
+font-size = 16
+theme = Github Dark High Contrast
+bold-color = bright
+
+background = #000000
+foreground = #c7c7c7
+selection-background = #b1bac4
+palette = 0=#000000
+palette = 1=#c91b00
+palette = 2=#00c200
+palette = 3=#c7c400
+palette = 4=#0225c7
+palette = 5=#c930c7
+palette = 6=#00c5c7
+palette = 7=#c7c7c7
+palette = 8=#676767
+palette = 9=#ff6d67
+palette = 10=#5ff967
+palette = 11=#fefb67
+palette = 12=#6871ff
+palette = 13=#ff76ff
+palette = 14=#5ffdff
+palette = 15=#feffff
+
+command = direct:/opt/homebrew/bin/tmux new-session -A -s main

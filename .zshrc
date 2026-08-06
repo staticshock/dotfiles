@@ -56,7 +56,7 @@ function git_prompt_info() {
     # prompt escapes.
     ref=${ref//\%/%%}
 
-    print -nr -- "%F{white} <%F{magenta}${ref}%F{white}>"
+    print -nr -- "%F{white} <%F{13}${ref}%F{white}>"
     [[ -z $git_status ]] || print -nr -- ' %F{yellow}✗'
 }
 
